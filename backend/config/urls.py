@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('apps.core.urls')), #redireciona o django para ler as rotas de /core/urls.py
     path('', include('apps.users.urls')), #redireciona para ler /users/urls.py
+    path('', include('apps.treinos.urls')), #redireciona para ler /treinos/urls.py
 ]
