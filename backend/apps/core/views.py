@@ -1,3 +1,6 @@
+from django.http import HttpResponse #usando httpsresponse so pra view temporaria
 from django.shortcuts import render
 
-# Create your views here.
+# view provisória do dashboard, dps vai usar template
+def dashboard(request):
+    return HttpResponse("dashteste")
