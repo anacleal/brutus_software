@@ -4,7 +4,7 @@ from django.shortcuts import render
 
 
 def login_view(request):
-    return HttpResponse("Login")
+    return render(request, 'users/login.html')
 
 
 def cadastro_view(request):

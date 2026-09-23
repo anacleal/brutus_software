@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Entrar - Brutus{% endblock %}
+
+{% block content %}
+<h1>Brutus</h1>
+<p>Atlética Brutus</p>
+
+{% if form.errors %}
+<p>Usuário ou senha inválidos.</p>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+
+    <label for="username">Usuário ou e-mail</label>
+    <input type="text" name="username" id="username" required autofocus>
+
+    <label for="password">Senha</label>
+    <input type="password" name="password" id="password" required>
+
+    <button type="submit">Entrar</button>
+</form>
+
+<a href="#">Esqueci minha senha</a>
+<a href="{% url 'cadastro' %}">Criar conta</a>
+{% endblock %}
