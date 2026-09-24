@@ -1,13 +1,18 @@
+```html
 <!DOCTYPE html>
 
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Brutus - Navegação</title>
 
 <style>
+
     * {
         box-sizing: border-box;
         margin: 0;
@@ -35,7 +40,6 @@
         --accent-hover: #A52F23;
         --accent-active: #E05A4A;
         --avatar-bg: #1E2A3A;
-
         --text-25: rgba(255, 255, 255, 0.25);
         --text-35: rgba(255, 255, 255, 0.35);
         --text-40: rgba(255, 255, 255, 0.40);
@@ -43,7 +47,6 @@
         --text-55: rgba(255, 255, 255, 0.55);
         --text-60: rgba(255, 255, 255, 0.60);
         --text-80: rgba(255, 255, 255, 0.80);
-
         --white-5: rgba(255, 255, 255, 0.05);
         --white-8: rgba(255, 255, 255, 0.08);
     }
@@ -169,11 +172,16 @@
         font-size: 14px;
         padding: 8px 16px;
         border-radius: 8px;
-        transition: background .15s ease;
+        transition: background .15s ease, box-shadow .15s ease;
     }
 
     .btn-primary:hover {
         background: var(--accent-hover);
+    }
+
+    .btn-primary.active {
+        background: var(--accent-active);
+        box-shadow: 0 0 0 2px rgba(224, 90, 74, 0.35);
     }
 
     .profile-btn {
@@ -182,11 +190,24 @@
         gap: 8px;
         padding: 6px;
         border-radius: 8px;
-        transition: background .15s ease;
+        transition: background .15s ease, box-shadow .15s ease;
     }
 
     .profile-btn:hover {
         background: var(--white-5);
+    }
+
+    .profile-btn.active {
+        background: var(--white-8);
+        box-shadow: 0 0 0 2px rgba(192, 57, 43, 0.35);
+    }
+
+    .profile-btn.active .profile-name {
+        color: #fff;
+    }
+
+    .profile-btn.active .avatar {
+        box-shadow: 0 0 0 2px rgba(224, 90, 74, 0.55);
     }
 
     .avatar {
@@ -270,7 +291,7 @@
         padding: 6px 0;
         border-radius: 12px;
         color: var(--text-35);
-        transition: color .15s ease;
+        transition: color .15s ease, background .15s ease;
     }
 
     .tab-btn:hover {
@@ -287,6 +308,7 @@
 
     .tab-btn.active {
         color: var(--accent-active);
+        background: rgba(224, 90, 74, 0.08);
     }
 
     .tab-label {
@@ -315,6 +337,7 @@
     }
 
     @media (min-width: 1024px) {
+
         .header-desktop {
             display: flex;
         }
@@ -322,7 +345,9 @@
         .header-mobile {
             display: none;
         }
+
     }
+
 </style>
 
 </head>
@@ -332,6 +357,7 @@
 <header class="header header-desktop">
 
     <button class="logo" onclick="navigate('dashboard')">
+
         <div class="logo-badge" style="width:32px;height:32px;font-size:14px;">
             B
         </div>
@@ -339,38 +365,55 @@
         <span class="logo-text" style="font-size:18px;">
             Brutus
         </span>
+
     </button>
 
     <nav class="desktop-nav" id="desktop-main-nav"></nav>
 
     <div class="header-actions">
 
-        <button class="btn-primary" onclick="navigate('create-workout')">
+        <button
+            class="btn-primary"
+            id="desktop-create-workout"
+            onclick="navigate('create-workout')"
+        >
             <svg class="icon" width="16" height="16" viewBox="0 0 24 24">
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
-
             Criar treino
         </button>
 
         <button class="icon-btn">
+
             <svg class="icon" width="20" height="20" viewBox="0 0 24 24">
                 <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
                 <path d="M13.73 21a2 2 0 0 1-3.46 0" />
             </svg>
 
             <span class="icon-dot"></span>
+
         </button>
 
-        <button class="profile-btn" onclick="navigate('profile')">
+        <button
+            class="profile-btn"
+            id="desktop-profile"
+            onclick="navigate('profile')"
+        >
 
             <div class="avatar">
-                <svg class="icon" width="14" height="14" viewBox="0 0 24 24"
-                    style="color:var(--text-50);">
+
+                <svg
+                    class="icon"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    style="color:var(--text-50);"
+                >
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
                 </svg>
+
             </div>
 
             <span class="profile-name" id="desktop-username">
@@ -382,14 +425,17 @@
         <div class="divider"></div>
 
         <button class="logout-btn" title="Sair" onclick="logout()">
+
             <svg class="icon" width="16" height="16" viewBox="0 0 24 24">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                 <polyline points="16 17 21 12 16 7" />
                 <line x1="21" y1="12" x2="9" y2="12" />
             </svg>
+
         </button>
 
     </div>
+
 </header>
 
 <header class="header header-mobile">
@@ -411,27 +457,37 @@
         <div class="mobile-topbar-actions">
 
             <button class="icon-btn">
+
                 <svg class="icon" width="20" height="20" viewBox="0 0 24 24">
                     <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
                     <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                 </svg>
 
                 <span class="icon-dot"></span>
+
             </button>
 
             <button onclick="navigate('profile')" style="padding:4px;">
 
                 <div class="avatar">
-                    <svg class="icon" width="14" height="14" viewBox="0 0 24 24"
-                        style="color:var(--text-50);">
+
+                    <svg
+                        class="icon"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        style="color:var(--text-50);"
+                    >
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                         <circle cx="12" cy="7" r="4" />
                     </svg>
+
                 </div>
 
             </button>
 
         </div>
+
     </div>
 
     <div class="mobile-tabs" id="mobile-nav"></div>
@@ -452,6 +508,7 @@
 
 
 <script>
+
     const mainNav = [
         {
             page: "dashboard",
@@ -464,6 +521,7 @@
             icon: "dumbbell"
         }
     ];
+
     const mobileNav = [
         {
             page: "dashboard",
@@ -490,6 +548,7 @@
             highlight: false
         }
     ];
+
     const icons = {
 
         home:
@@ -511,16 +570,16 @@
             '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>' +
             '<circle cx="12" cy="7" r="4"/>'
     };
+
     const routes = {
 
         dashboard: "/dashboard/",
-
         workouts: "/treinos/",
-
         "create-workout": "/treinos/criar/",
-
         profile: "/perfil/"
+
     };
+
     function getCurrentPage() {
 
         const path = window.location.pathname;
@@ -546,6 +605,8 @@
 
 
     let currentPage = getCurrentPage();
+
+
     function svgIcon(name, size) {
 
         const s = size || 18;
@@ -561,6 +622,8 @@
             </svg>
         `;
     }
+
+
     function renderDesktopNav() {
 
         const el = document.getElementById("desktop-main-nav");
@@ -571,15 +634,30 @@
                 class="nav-btn ${currentPage === item.page ? "active" : ""}"
                 onclick="navigate('${item.page}')"
             >
-
                 ${svgIcon(item.icon, 16)}
-
                 ${item.label}
-
             </button>
 
         `).join("");
+
+        const createButton = document.getElementById("desktop-create-workout");
+
+        if (currentPage === "create-workout") {
+            createButton.classList.add("active");
+        } else {
+            createButton.classList.remove("active");
+        }
+
+        const profileButton = document.getElementById("desktop-profile");
+
+        if (currentPage === "profile") {
+            profileButton.classList.add("active");
+        } else {
+            profileButton.classList.remove("active");
+        }
     }
+
+
     function renderMobileNav() {
 
         const el = document.getElementById("mobile-nav");
@@ -615,23 +693,27 @@
 
         }).join("");
     }
+
+
     function navigate(page) {
 
         const route = routes[page];
 
         if (route) {
-
             window.location.href = route;
-
         }
+
     }
+
+
     function logout() {
 
         alert("Sessão encerrada.");
 
     }
-    renderDesktopNav();
 
+
+    renderDesktopNav();
     renderMobileNav();
 
 </script>
