@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- faz o celular usar a largura real da tela, sem isso nada fica responsivo -->
     <title>{% block title %}Brutus{% endblock %}</title> <!-- Brutus é o titulo padrao, cada pagina troca pelo dela se quiser -->
+    {% block css %}{% endblock %} <!-- espaco pra cada pagina colocar o proprio css -->
 </head>
 <body>
     {% block content %}{% endblock %} <!-- aqui dentro entra o conteudo de cada pagina -->

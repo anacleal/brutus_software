@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
+{% load static %} {# libera o {% static %} pra montar o caminho do css #}
 
 {% block title %}Entrar - Brutus{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{% static 'users/css/login.css' %}">
+{% endblock %}
 
 {% block content %}
 <h1>Brutus</h1>
