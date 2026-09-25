@@ -130,3 +130,4 @@ MAILERS = {
 }
 
 LOGIN_URL = 'login' #pra onde o @login_required redireciona quem nao ta logado
+LOGOUT_REDIRECT_URL = 'login'
