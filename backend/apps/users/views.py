@@ -11,6 +11,7 @@ def login_view(request):
         if form.is_valid(): #confere se o usuario existe e se a senha bate
             login(request, form.get_user()) #cria a sessao que o @login_required confere depois
             return redirect('dashboard')
+        return render(request, 'users/login.html', {'form': form}, status=401) #login errado volta a mesma pagina com a mensagem, mas com status 401 (nao autorizado)
     else:
         form = AuthenticationForm(request)
     return render(request, 'users/login.html', {'form': form})
