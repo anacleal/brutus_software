@@ -1,13 +1,15 @@
-/* cores e espaçamentos copiados do frontend/styles.css (guia visual KAN-16) */
+/* cores copiadas do figma (plataforma web atlética brutus); espaçamentos copiados do frontend/styles.css (guia visual KAN-16) */
 :root {
-  --color-brand-700: #80392B;
-  --color-brand-600: #d62845;
-  --color-brand-100: #fde8ec;
-  --color-ink-900: #171a21;
-  --color-ink-600: #5c6472;
-  --color-surface: #ffffff;
-  --color-canvas: #f7f8fa;
-  --color-border: #e4e7ec;
+  --color-brand-700: #A52F23;
+  --color-brand-600: #C0392B;
+  --color-brand-500: #E05A4A;
+  --color-brand-100: rgb(192 57 43 / 15%);
+  --color-ink-900: #ffffff;
+  --color-ink-700: rgb(255 255 255 / 55%);
+  --color-ink-600: rgb(255 255 255 / 40%);
+  --color-surface: #141923;
+  --color-canvas: #0E1117;
+  --color-border: #1E2A3C;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
   --space-4: 1rem;
@@ -40,7 +42,7 @@ body {
 
 h1 {
   margin: 0;
-  color: var(--color-brand-600);
+  color: var(--color-ink-900);
   font-size: 2.5rem;
   letter-spacing: -0.04em;
 }
@@ -54,7 +56,7 @@ h1 + p {
 p + p {
   margin: 0 0 var(--space-4);
   padding: var(--space-3) var(--space-4);
-  color: var(--color-brand-700);
+  color: var(--color-brand-500);
   background: var(--color-brand-100);
   border-radius: var(--radius-sm);
 }
@@ -66,6 +68,7 @@ form {
 }
 
 label {
+  color: var(--color-ink-700);
   font-weight: 600;
 }
 
@@ -75,6 +78,7 @@ input {
   min-height: 3rem;
   margin-bottom: var(--space-3);
   padding: 0 var(--space-4);
+  color: var(--color-ink-900);
   font: inherit;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -89,7 +93,7 @@ input:focus-visible {
 button {
   min-height: 3rem;
   margin-top: var(--space-2);
-  color: var(--color-surface);
+  color: var(--color-ink-900);
   font: inherit;
   font-weight: 750;
   background: var(--color-brand-600);
@@ -109,7 +113,7 @@ button:focus-visible {
 
 a {
   margin-top: var(--space-4);
-  color: var(--color-brand-700);
+  color: var(--color-brand-500);
   font-weight: 600;
   text-align: center;
 }
