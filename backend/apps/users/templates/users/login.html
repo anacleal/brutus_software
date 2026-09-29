@@ -8,8 +8,16 @@
 {% endblock %}
 
 {% block content %}
-<h1>Brutus</h1>
-<p>Atlética Brutus</p>
+<div class="marca">
+    <div class="marca__selo">B</div>
+    <div>
+        <div class="marca__nome">Brutus</div>
+        <div class="marca__lema">Atlética Universitária</div>
+    </div>
+</div>
+
+<h1>Bem-vindo de volta 👋</h1>
+<p>Entre com seu e-mail e senha para acessar a plataforma.</p>
 
 {% if form.errors %}
 <p>Usuário ou senha inválidos.</p>
@@ -19,14 +27,18 @@
     {% csrf_token %}
 
     <label for="username">Usuário ou e-mail</label>
-    <input type="text" name="username" id="username" required autofocus>
+    <input type="text" name="username" id="username" placeholder="seu@email.edu.br" required autofocus>
 
-    <label for="password">Senha</label>
-    <input type="password" name="password" id="password" required>
+    <div class="senha-linha">
+        <label for="password">Senha</label>
+        <a href="#" class="esqueci">Esqueci minha senha</a>
+    </div>
+    <input type="password" name="password" id="password" placeholder="••••••••" required>
 
     <button type="submit">Entrar</button>
 </form>
 
-<a href="#">Esqueci minha senha</a>
-<a href="{% url 'cadastro' %}">Criar conta</a>
+<div class="rodape">
+    Não tem uma conta? <a href="{% url 'cadastro' %}">Criar conta</a>
+</div>
 {% endblock %}
