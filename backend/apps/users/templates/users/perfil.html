@@ -1,0 +1,137 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile_user.nome|default:profile_user.usuario }} — Brutus</title>
+    <link rel="stylesheet" href="{% static 'css/perfil.css' %}">
+</head>
+
+<body>
+    {% include 'core/header.html' %}
+
+    <main class="profile-page">
+        <section class="profile-header">
+            <div class="profile-identity">
+                {% if profile_user.foto_perfil %}
+                    <img class="profile-avatar"
+                         src="{{ profile_user.foto_perfil }}"
+                         alt="Foto de {{ profile_user.nome|default:profile_user.usuario }}">
+                {% else %}
+                    <span class="profile-avatar profile-avatar--placeholder">
+                        {{ profile_user.usuario|first|upper }}
+                    </span>
+                {% endif %}
+
+                <div class="profile-identity__text">
+                    <h1>{{ profile_user.nome|default:profile_user.usuario }}</h1>
+                    <p class="profile-username">@{{ profile_user.usuario }}</p>
+
+                    {% if profile_user.modalidades.all %}
+                        <span class="modality-badge">
+                            {{ profile_user.modalidades.all.0.nome }}
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if request.user == profile_user %}
+                <a href="{% url 'perfil' %}" class="button button--secondary">
+                    <span aria-hidden="true">✎</span>
+                    Editar perfil
+                </a>
+            {% endif %}
+        </section>
+
+        <section class="stats-grid" aria-label="Resumo do perfil">
+            <article class="stat-card">
+                <strong>{{ completed_trainings_count|default:"0" }}</strong>
+                <span>Treinos feitos</span>
+            </article>
+
+            <article class="stat-card">
+                <strong>{{ created_trainings_count|default:"0" }}</strong>
+                <span>Criados</span>
+            </article>
+
+            <article class="stat-card">
+                <strong>{{ profile_user.profile.modalidades.all.0.nome|default:"—" }}</strong>
+                <span>Modalidade</span>
+            </article>
+        </section>
+
+        <section class="profile-info">
+            <div class="info-item">
+                <span>E-mail</span>
+                <strong>{{ profile_user.email|default:"Não informado" }}</strong>
+            </div>
+
+            <div class="info-item">
+                <span>Usuário</span>
+                <strong>@{{ profile_user.usuario }}</strong>
+            </div>
+
+            <div class="info-item">
+                <span>Modalidade</span>
+                <strong>{{ profile_user.profile.modalidades.all.0.nome|default:"Não informada" }}</strong>
+            </div>
+
+            <div class="info-item">
+                <span>Status</span>
+                <strong>
+                    {% if profile_user.is_active %}
+                        Ativo
+                    {% else %}
+                        Inativo
+                    {% endif %}
+                </strong>
+            </div>
+        </section>
+
+        <section class="trainings-section">
+            <div class="section-heading">
+                <h2>Meus treinos</h2>
+            </div>
+
+            <div class="tabs" role="tablist" aria-label="Treinos do usuário">
+                <button class="tab tab--active" type="button" role="tab">
+                    Próximos
+                    <span class="tab__count">{{ upcoming_trainings_count|default:"0" }}</span>
+                </button>
+
+                <button class="tab" type="button" role="tab">
+                    Participados
+                    <span class="tab__count">{{ participated_trainings_count|default:"0" }}</span>
+                </button>
+
+                <button class="tab" type="button" role="tab">
+                    Criados
+                    <span class="tab__count">{{ created_trainings_count|default:"0" }}</span>
+                </button>
+            </div>
+
+            <div class="training-panel">
+                {% if upcoming_trainings %}
+                    <div class="training-list">
+                        {% for training in upcoming_trainings %}
+                            <a href="{% url 'treinos' training.pk %}" class="training-item">
+                                <div>
+                                    <strong>{{ training.title }}</strong>
+                                    <span>{{ training.date|date:"d/m/Y H:i" }}</span>
+                                </div>
+                                <span class="training-item__arrow">→</span>
+                            </a>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <p>Nenhum treino agendado</p>
+                        <a href="{% url 'treinos' %}">Explorar treinos</a>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </main>
+</body>
+</html>
