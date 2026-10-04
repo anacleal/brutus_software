@@ -39,6 +39,17 @@
     <button type="submit">Entrar</button>
 </form>
 
+<script>
+    document.querySelectorAll('form [required]').forEach((campo) => {
+        campo.addEventListener('invalid', () => {
+            campo.setCustomValidity('Por favor, preencha este campo.');
+        });
+        campo.addEventListener('input', () => {
+            campo.setCustomValidity('');
+        });
+    });
+</script>
+
 <div class="rodape">
     Não tem uma conta? <a href="{% url 'cadastro' %}">Criar conta</a>
 </div>
