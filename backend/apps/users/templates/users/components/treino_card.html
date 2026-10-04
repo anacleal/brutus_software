@@ -1,0 +1,146 @@
+<a href="{% url 'treinos' %}" class="training-card">
+
+    <div class="training-card__top">
+
+        <div class="training-card__badges">
+
+            <span class="training-card__modality">
+                {{ training.modalidade.nome }}
+            </span>
+
+            {% if card_type == "created" %}
+                <span class="training-card__status">
+                    Criado
+                </span>
+            {% else %}
+                <span class="training-card__status">
+                    Inscrito
+                </span>
+            {% endif %}
+
+        </div>
+
+        {% if training.custo %}
+            <span class="training-card__cost">
+                R$ {{ training.custo }},00
+            </span>
+        {% else %}
+            <span class="training-card__cost training-card__cost--free">
+                Gratuito
+            </span>
+        {% endif %}
+
+    </div>
+
+
+    <h3 class="training-card__title">
+        {{ training.local }}
+    </h3>
+
+
+    <div class="training-card__info">
+
+        <div class="training-card__info-row">
+            <span class="training-card__info-icon">▣</span>
+
+            <strong>
+                {{ training.data_hora|date:"d/m/Y" }}
+            </strong>
+
+            <span>•</span>
+
+            <strong>
+                {{ training.data_hora|date:"H:i" }}
+            </strong>
+        </div>
+
+
+        <div class="training-card__info-row">
+            <span class="training-card__info-icon">⌂</span>
+
+            <strong>
+                {{ training.local }}
+            </strong>
+        </div>
+
+
+        <div class="training-card__info-row">
+            <span class="training-card__info-icon">♧</span>
+
+            <strong>
+                {{ training.inscricoes.count }}
+
+                {% if training.limite_participantes %}
+                    /{{ training.limite_participantes }}
+                {% endif %}
+
+                participantes
+            </strong>
+        </div>
+
+    </div>
+
+
+    {% if training.limite_participantes %}
+
+        <div class="training-card__participants">
+
+            <div class="training-card__participants-text">
+
+                <span>Vagas</span>
+
+                <strong>
+                    {{ training.inscricoes.count }}/{{ training.limite_participantes }}
+                </strong>
+
+            </div>
+
+            <div class="training-card__progress">
+
+                <div
+                    class="training-card__progress-bar"
+                    style="width: {% widthratio training.inscricoes.count training.limite_participantes 100 %}%;"
+                ></div>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+
+    <div class="training-card__footer">
+
+        <div class="training-card__creator">
+
+            {% if training.criador.foto_perfil %}
+
+                <img
+                    class="training-card__creator-avatar"
+                    src="{{ training.criador.foto_perfil }}"
+                    alt="Foto de {{ training.criador.nome }}"
+                >
+
+            {% else %}
+
+                <span class="training-card__creator-placeholder">
+                    {{ training.criador.usuario|first|upper }}
+                </span>
+
+            {% endif %}
+
+            <span class="training-card__creator-name">
+                {{ training.criador.nome }}
+                {{ training.criador.sobrenome }}
+            </span>
+
+        </div>
+
+
+        <span class="training-card__button">
+            Ver treino
+        </span>
+
+    </div>
+
+</a>

@@ -29,35 +29,184 @@
                     <p class="profile-username">@{{ profile_user.usuario }}</p>
 
                     {% if profile_user.modalidades.all %}
-                        <span class="modality-badge">
-                            {{ profile_user.modalidades.all.0.nome }}
+                        <div class="profile-modalities">
+                            {% for modalidade in profile_user.modalidades.all %}
+                                <span class="modality-badge">
+                                    {{ modalidade.nome }}
+                                </span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <span class="profile-modalities-empty">
+                            Nenhuma modalidade informada
                         </span>
                     {% endif %}
                 </div>
             </div>
 
             {% if request.user == profile_user %}
-                <a href="{% url 'perfil' %}" class="button button--secondary">
+                <button
+                    type="button"
+                    class="button button--secondary"
+                    id="edit-profile-button"
+                >
                     <span aria-hidden="true">✎</span>
                     Editar perfil
-                </a>
+                </button>
             {% endif %}
         </section>
 
+        {% if request.user == profile_user %}
+            <section
+                class="profile-edit-card"
+                id="profile-edit-card"
+                hidden
+            >
+                <div class="profile-edit-card__header">
+                    <h2>Editar perfil</h2>
+                </div>
+
+                <form method="post" action="{% url 'perfil' %}">
+
+                    {% csrf_token %}
+
+                    <div class="profile-edit-grid">
+
+                        <div class="form-field">
+                            <label for="{{ form.nome.id_for_label }}">
+                                Nome
+                            </label>
+
+                            {{ form.nome }}
+
+                            {% if form.nome.errors %}
+                                <div class="form-error">
+                                    {{ form.nome.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+
+                        <div class="form-field">
+                            <label for="{{ form.sobrenome.id_for_label }}">
+                                Sobrenome
+                            </label>
+
+                            {{ form.sobrenome }}
+
+                            {% if form.sobrenome.errors %}
+                                <div class="form-error">
+                                    {{ form.sobrenome.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+
+                        <div class="form-field">
+                            <label for="{{ form.email.id_for_label }}">
+                                E-mail
+                            </label>
+
+                            {{ form.email }}
+
+                            {% if form.email.errors %}
+                                <div class="form-error">
+                                    {{ form.email.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+
+                        <div class="form-field">
+                            <label for="{{ form.usuario.id_for_label }}">
+                                Usuário
+                            </label>
+
+                            {{ form.usuario }}
+
+                            {% if form.usuario.errors %}
+                                <div class="form-error">
+                                    {{ form.usuario.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-field form-field--modalidades">
+
+                        <label>
+                            Modalidades praticadas
+                        </label>
+
+                        <div class="modality-selector">
+
+                            {% for modalidade in form.modalidades %}
+                                <label class="modality-option">
+                                    {{ modalidade.tag }}
+                                    <span>
+                                        {{ modalidade.choice_label }}
+                                    </span>
+                                </label>
+                            {% endfor %}
+
+                        </div>
+
+                        {% if form.modalidades.errors %}
+                            <div class="form-error">
+                                {{ form.modalidades.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="profile-edit-actions">
+
+                        <button
+                            type="button"
+                            class="button button--cancel"
+                            id="cancel-edit-profile"
+                        >
+                            Cancelar
+                        </button>
+
+                        <button
+                            type="submit"
+                            class="button button--save"
+                        >
+                            ✓
+                            Salvar alterações
+                        </button>
+
+                    </div>
+
+                </form>
+            </section>
+
+            {% endif %}
+
         <section class="stats-grid" aria-label="Resumo do perfil">
             <article class="stat-card">
-                <strong>{{ completed_trainings_count|default:"0" }}</strong>
+                <strong>
+                    {{ completed_trainings_count|default:"0" }}
+                </strong>
                 <span>Treinos feitos</span>
             </article>
 
             <article class="stat-card">
-                <strong>{{ created_trainings_count|default:"0" }}</strong>
-                <span>Criados</span>
+                <strong>
+                    {{ created_trainings_count|default:"0" }}
+                </strong>
+                <span>Treinos criados</span>
             </article>
 
             <article class="stat-card">
-                <strong>{{ profile_user.profile.modalidades.all.0.nome|default:"—" }}</strong>
-                <span>Modalidade</span>
+                <strong>
+                    {{ profile_user.modalidades.all|length }}
+                </strong>
+                <span>Modalidades</span>
             </article>
         </section>
 
@@ -72,9 +221,19 @@
                 <strong>@{{ profile_user.usuario }}</strong>
             </div>
 
-            <div class="info-item">
-                <span>Modalidade</span>
-                <strong>{{ profile_user.profile.modalidades.all.0.nome|default:"Não informada" }}</strong>
+            <div class="info-item info-item--modalities">
+                <span>Modalidades praticadas</span>
+                {% if profile_user.modalidades.all %}
+                    <div class="profile-modalities profile-modalities--info">
+                        {% for modalidade in profile_user.modalidades.all %}
+                            <span class="modality-badge">
+                                {{ modalidade.nome }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <strong>Não informadas</strong>
+                {% endif %}
             </div>
 
             <div class="info-item">
@@ -95,43 +254,167 @@
             </div>
 
             <div class="tabs" role="tablist" aria-label="Treinos do usuário">
-                <button class="tab tab--active" type="button" role="tab">
+
+                <button
+                    class="tab tab--active"
+                    type="button"
+                    role="tab"
+                    data-tab="upcoming"
+                    aria-selected="true"
+                >
                     Próximos
-                    <span class="tab__count">{{ upcoming_trainings_count|default:"0" }}</span>
+                    <span class="tab__count">
+                        {{ upcoming_trainings|length|default:"0" }}
+                    </span>
                 </button>
 
-                <button class="tab" type="button" role="tab">
+                <button
+                    class="tab"
+                    type="button"
+                    role="tab"
+                    data-tab="participated"
+                    aria-selected="false"
+                >
                     Participados
-                    <span class="tab__count">{{ participated_trainings_count|default:"0" }}</span>
+                    <span class="tab__count">
+                        {{ participated_trainings|length|default:"0" }}
+                    </span>
                 </button>
 
-                <button class="tab" type="button" role="tab">
+                <button
+                    class="tab"
+                    type="button"
+                    role="tab"
+                    data-tab="created"
+                    aria-selected="false"
+                >
                     Criados
-                    <span class="tab__count">{{ created_trainings_count|default:"0" }}</span>
+                    <span class="tab__count">
+                        {{ created_trainings|length|default:"0" }}
+                    </span>
                 </button>
+
             </div>
 
-            <div class="training-panel">
+
+            <!-- PRÓXIMOS -->
+            <div
+                class="training-panel"
+                data-panel="upcoming"
+            >
                 {% if upcoming_trainings %}
                     <div class="training-list">
                         {% for training in upcoming_trainings %}
-                            <a href="{% url 'treinos' training.pk %}" class="training-item">
-                                <div>
-                                    <strong>{{ training.title }}</strong>
-                                    <span>{{ training.date|date:"d/m/Y H:i" }}</span>
-                                </div>
-                                <span class="training-item__arrow">→</span>
-                            </a>
+                             {% include "users/components/treino_card.html" with training=training card_type="upcoming" %}
                         {% endfor %}
                     </div>
+
                 {% else %}
                     <div class="empty-state">
                         <p>Nenhum treino agendado</p>
-                        <a href="{% url 'treinos' %}">Explorar treinos</a>
+                        <a href="{% url 'treinos' %}">
+                            Explorar treinos
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+
+            <!-- PARTICIPADOS -->
+            <div
+                class="training-panel"
+                data-panel="participated"
+                hidden
+            >
+                {% if participated_trainings %}
+                    <div class="training-list">
+                        {% for training in participated_trainings %}
+                            {% include "users/components/treino_card.html" with training=training card_type="participated" %}
+                        {% endfor %}
+                    </div>
+
+                {% else %}
+                    <div class="empty-state">
+                        <p>Nenhum treino participado</p>
+                        <a href="{% url 'treinos' %}">
+                            Explorar treinos
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+
+            <!-- CRIADOS -->
+            <div
+                class="training-panel"
+                data-panel="created"
+                hidden
+            >
+                {% if created_trainings %}
+                    <div class="training-list">
+                        {% for training in created_trainings %}
+                            {% include "users/components/treino_card.html" with training=training card_type="created" %}
+                        {% endfor %}
+                    </div>
+
+                {% else %}
+                    <div class="empty-state">
+                        <p>Nenhum treino criado</p>
+                        <a href="{% url 'treinos' %}">
+                            Criar treino
+                        </a>
                     </div>
                 {% endif %}
             </div>
         </section>
     </main>
+    <script>
+        const tabs = document.querySelectorAll('.tab');
+        const panels = document.querySelectorAll('.training-panel');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.tab;
+
+                // Atualiza os botões
+                tabs.forEach(t => {
+                    t.classList.remove('tab--active');
+                    t.setAttribute('aria-selected', 'false');
+                });
+
+                tab.classList.add('tab--active');
+                tab.setAttribute('aria-selected', 'true');
+
+                // Atualiza os painéis
+                panels.forEach(panel => {
+                    panel.hidden = panel.dataset.panel !== target;
+                });
+            });
+        });
+
+        const editProfileButton = document.getElementById('edit-profile-button');
+        const editProfileCard = document.getElementById('profile-edit-card');
+        const cancelEditProfile = document.getElementById('cancel-edit-profile');
+
+        if (editProfileButton && editProfileCard) {
+
+            editProfileButton.addEventListener('click', () => {
+                editProfileCard.hidden = false;
+
+                editProfileCard.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            });
+        }
+
+
+        if (cancelEditProfile && editProfileCard) {
+
+            cancelEditProfile.addEventListener('click', () => {
+                editProfileCard.hidden = true;
+            });
+        }
+    </script>
 </body>
 </html>

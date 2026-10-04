@@ -1,17 +1,29 @@
+/* =========================================================
+   VARIÁVEIS
+   ========================================================= */
+
 :root {
-    --color-brand-700: #80392b;
-    --color-brand-600: #d62845;
-    --color-brand-500: #ed3b57;
-    --color-brand-100: #3a171c;
+    --color-brand: #d62845;
+    --color-brand-hover: #b91f38;
+    --color-brand-soft: rgb(214 40 69 / 12%);
 
-    --color-ink-900: #f4f5f7;
-    --color-ink-600: #858b98;
-    --color-ink-500: #666d7b;
+    --color-success: #16d879;
+    --color-success-soft: #12352b;
 
-    --color-canvas: #0d1016;
+    --color-text: #f1f2f4;
+    --color-text-light: #e2e4e8;
+    --color-text-muted: #7f8999;
+    --color-text-subtle: #606877;
+
+    --color-background: #0d1016;
     --color-surface: #131821;
-    --color-surface-2: #171d27;
+    --color-surface-hover: #171d27;
+    --color-input: #0d1117;
+
     --color-border: #222b39;
+    --color-border-light: #293341;
+
+    --color-progress-background: #202b3b;
 
     --space-1: 0.25rem;
     --space-2: 0.5rem;
@@ -19,17 +31,27 @@
     --space-4: 1rem;
     --space-5: 1.5rem;
     --space-6: 2rem;
-    --space-7: 3rem;
 
     --radius-sm: 0.5rem;
     --radius-md: 0.75rem;
     --radius-lg: 1rem;
 
-    --shadow-card: 0 1rem 2.5rem rgb(0 0 0 / 18%);
+    --transition: 150ms ease;
 
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system,
-        BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
 }
+
+
+/* =========================================================
+   BASE
+   ========================================================= */
 
 * {
     box-sizing: border-box;
@@ -37,14 +59,16 @@
 
 html {
     min-width: 20rem;
-    background: var(--color-canvas);
+    background: var(--color-background);
 }
 
 body {
     min-width: 20rem;
     margin: 0;
-    color: var(--color-ink-900);
-    background: var(--color-canvas);
+
+    color: var(--color-text);
+    background: var(--color-background);
+
     font-family: inherit;
 }
 
@@ -58,6 +82,15 @@ a {
     -webkit-tap-highlight-color: transparent;
 }
 
+[hidden] {
+    display: none !important;
+}
+
+
+/* =========================================================
+   HEADER / TOPBAR
+   ========================================================= */
+
 .topbar {
     position: sticky;
     top: 0;
@@ -66,6 +99,7 @@ a {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
+
     min-height: 3.5rem;
     padding: 0 1.5rem;
 
@@ -77,17 +111,20 @@ a {
     display: inline-flex;
     align-items: center;
     gap: 0.55rem;
+
     width: fit-content;
 }
 
 .brand__mark {
     display: grid;
-    width: 2rem;
-    height: 2rem;
     place-items: center;
 
+    width: 2rem;
+    height: 2rem;
+
     color: #fff;
-    background: var(--color-brand-600);
+    background: var(--color-brand);
+
     border-radius: 0.45rem;
 
     font-size: 1rem;
@@ -111,29 +148,36 @@ a {
     gap: 0.45rem;
 
     color: #858b98;
+
     font-size: 0.8rem;
     font-weight: 600;
 
-    transition: color 150ms ease;
+    transition: color var(--transition);
 }
 
 .nav-link:hover {
-    color: var(--color-ink-900);
+    color: var(--color-text);
 }
 
 .nav-link img {
     width: 0.9rem;
     height: 0.9rem;
+
     opacity: 0.8;
     filter: invert(65%);
 }
 
 .topbar__actions {
     display: flex;
-    justify-content: flex-end;
     align-items: center;
+    justify-content: flex-end;
     gap: 0.85rem;
 }
+
+
+/* =========================================================
+   BOTÕES
+   ========================================================= */
 
 .button {
     display: inline-flex;
@@ -148,28 +192,35 @@ a {
     border-radius: var(--radius-sm);
 
     color: inherit;
+
     font: inherit;
     font-size: 0.8rem;
     font-weight: 700;
 
     cursor: pointer;
-    transition: background-color 150ms ease, transform 150ms ease;
+
+    transition:
+        background-color var(--transition),
+        color var(--transition),
+        transform var(--transition);
 }
 
 .button--primary {
     color: #fff;
-    background: var(--color-brand-600);
+    background: var(--color-brand);
 }
 
 .button--primary:hover {
-    background: var(--color-brand-700);
+    background: var(--color-brand-hover);
     transform: translateY(-1px);
 }
 
 .button--secondary {
     min-height: 2.4rem;
+
     color: #b7bdc8;
-    background: var(--color-surface-2);
+    background: var(--color-surface-hover);
+
     border: 1px solid transparent;
 }
 
@@ -178,15 +229,20 @@ a {
     background: #1b222d;
 }
 
+
+/* =========================================================
+   HEADER - ÍCONES
+   ========================================================= */
+
 .header-icon {
     position: relative;
 
     display: grid;
+    place-items: center;
+
     width: 2rem;
     height: 2rem;
     padding: 0;
-
-    place-items: center;
 
     color: #707887;
     background: transparent;
@@ -198,6 +254,7 @@ a {
 .header-icon img {
     width: 1.05rem;
     height: 1.05rem;
+
     filter: invert(55%);
 }
 
@@ -213,7 +270,7 @@ a {
     width: 0.3rem;
     height: 0.3rem;
 
-    background: var(--color-brand-500);
+    background: var(--color-brand);
     border-radius: 50%;
 }
 
@@ -225,14 +282,17 @@ a {
     padding-left: 0.1rem;
 
     color: #9da3ae;
+
     font-size: 0.75rem;
     font-weight: 600;
 }
 
 .user-menu__avatar {
     display: block;
+
     width: 1.65rem;
     height: 1.65rem;
+
     object-fit: cover;
     border-radius: 50%;
 }
@@ -240,16 +300,28 @@ a {
 .user-menu__avatar--placeholder {
     display: grid;
     place-items: center;
+
     color: #fff;
-    background: var(--color-brand-600);
+    background: var(--color-brand);
+
     font-size: 0.7rem;
 }
+
+
+/* =========================================================
+   PÁGINA DE PERFIL
+   ========================================================= */
 
 .profile-page {
     width: min(100% - 2rem, 49rem);
     margin: 0 auto;
     padding: 6.75rem 0 4rem;
 }
+
+
+/* =========================================================
+   CABEÇALHO DO PERFIL
+   ========================================================= */
 
 .profile-header {
     display: flex;
@@ -258,6 +330,7 @@ a {
     gap: var(--space-6);
 
     padding-bottom: 1.25rem;
+
     border-bottom: 1px solid var(--color-border);
 }
 
@@ -269,6 +342,7 @@ a {
 
 .profile-avatar {
     display: block;
+
     width: 4.9rem;
     height: 4.9rem;
 
@@ -281,7 +355,7 @@ a {
     place-items: center;
 
     color: #fff;
-    background: var(--color-brand-600);
+    background: var(--color-brand);
 
     font-size: 1.7rem;
     font-weight: 800;
@@ -290,30 +364,68 @@ a {
 .profile-identity__text h1 {
     margin: 0 0 0.25rem;
 
-    color: #f1f2f4;
+    color: var(--color-text);
+
     font-size: 1.05rem;
     font-weight: 600;
 }
 
 .profile-username {
     margin: 0 0 0.45rem;
+
     color: #6f7785;
     font-size: 0.78rem;
+}
+
+
+/* =========================================================
+   MODALIDADES
+   ========================================================= */
+
+.profile-modalities {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+
+    margin-top: 0.4rem;
 }
 
 .modality-badge {
     display: inline-flex;
     align-items: center;
 
-    padding: 0.25rem 0.55rem;
+    padding: 0.3rem 0.55rem;
 
-    color: var(--color-brand-500);
-    background: rgb(214 40 69 / 12%);
+    color: var(--color-brand);
+    background: var(--color-brand-soft);
+
     border-radius: 0.3rem;
 
     font-size: 0.65rem;
     font-weight: 700;
+    line-height: 1;
 }
+
+.profile-modalities-empty {
+    display: inline-block;
+
+    color: var(--color-text-subtle);
+    font-size: 0.75rem;
+}
+
+.profile-modalities--info {
+    margin-top: 0.45rem;
+}
+
+.info-item--modalities {
+    grid-column: 1 / -1;
+}
+
+
+/* =========================================================
+   ESTATÍSTICAS
+   ========================================================= */
 
 .stats-grid {
     display: grid;
@@ -324,13 +436,13 @@ a {
 }
 
 .stat-card {
-    min-height: 4.65rem;
-    padding: 0.7rem;
-
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
+    min-height: 4.65rem;
+    padding: 0.7rem;
 
     background: var(--color-surface);
     border: 1px solid var(--color-border);
@@ -340,17 +452,25 @@ a {
 }
 
 .stat-card strong {
-    color: #f1f2f4;
+    color: var(--color-text);
+
     font-size: 1.7rem;
-    line-height: 1.1;
     font-weight: 600;
+    line-height: 1.1;
 }
 
 .stat-card span {
     margin-top: 0.25rem;
-    color: #606877;
+
+    color: var(--color-text-subtle);
+
     font-size: 0.68rem;
 }
+
+
+/* =========================================================
+   INFORMAÇÕES DO PERFIL
+   ========================================================= */
 
 .profile-info {
     display: grid;
@@ -371,16 +491,22 @@ a {
     gap: 0.35rem;
 }
 
-.info-item span {
-    color: #606877;
+.info-item > span {
+    color: var(--color-text-subtle);
     font-size: 0.68rem;
 }
 
-.info-item strong {
-    color: #e2e4e8;
+.info-item > strong {
+    color: var(--color-text-light);
+
     font-size: 0.78rem;
     font-weight: 500;
 }
+
+
+/* =========================================================
+   SEÇÃO DE TREINOS
+   ========================================================= */
 
 .trainings-section {
     margin-top: 1.55rem;
@@ -388,10 +514,17 @@ a {
 
 .section-heading h2 {
     margin: 0 0 1rem;
-    color: #f1f2f4;
+
+    color: var(--color-text);
+
     font-size: 1.1rem;
     font-weight: 650;
 }
+
+
+/* =========================================================
+   ABAS
+   ========================================================= */
 
 .tabs {
     display: flex;
@@ -422,7 +555,7 @@ a {
 }
 
 .tab--active {
-    color: #f1f2f4;
+    color: var(--color-text);
 }
 
 .tab--active::after {
@@ -434,19 +567,21 @@ a {
     left: 0;
 
     height: 2px;
-    background: var(--color-brand-600);
+
+    background: var(--color-brand);
 }
 
 .tab__count {
     display: inline-grid;
+    place-items: center;
+
     min-width: 1.15rem;
     height: 1.15rem;
     padding: 0 0.25rem;
 
-    place-items: center;
-
     color: #7e8693;
     background: #1c222c;
+
     border-radius: 0.25rem;
 
     font-size: 0.62rem;
@@ -454,37 +589,63 @@ a {
 
 .tab--active .tab__count {
     color: #fff;
-    background: var(--color-brand-600);
+    background: var(--color-brand);
 }
+
+
+/* =========================================================
+   PAINEL DE TREINOS
+   ========================================================= */
 
 .training-panel {
-    min-height: 10rem;
     margin-top: 1.1rem;
-
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
 }
 
-.empty-state {
-    min-height: 10rem;
+.training-panel[hidden] {
+    display: none !important;
+}
 
+
+/* =========================================================
+   LISTA DE TREINOS
+   ========================================================= */
+
+.training-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+
+/* =========================================================
+   ESTADO VAZIO
+   ========================================================= */
+
+.empty-state {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+
+    min-height: 10rem;
+    padding: 1.5rem;
+
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
 
     text-align: center;
 }
 
 .empty-state p {
     margin: 0 0 0.8rem;
-    color: #626a79;
+
+    color: var(--color-text-subtle);
     font-size: 0.8rem;
 }
 
 .empty-state a {
-    color: var(--color-brand-500);
+    color: var(--color-brand);
     font-size: 0.78rem;
     font-weight: 600;
 }
@@ -493,52 +654,475 @@ a {
     color: #ff536d;
 }
 
-.training-list {
+
+/* =========================================================
+   CARD DE TREINO
+   ========================================================= */
+
+.training-card {
     display: flex;
     flex-direction: column;
+
+    min-width: 0;
+    min-height: 220px;
+    padding: 1.25rem;
+
+    color: var(--color-text);
+    background: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+
+    text-decoration: none;
+
+    transition:
+        background-color var(--transition),
+        border-color var(--transition),
+        transform var(--transition);
 }
 
-.training-item {
+.training-card:hover {
+    background: var(--color-surface-hover);
+    border-color: #364150;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   CARD DE TREINO - TOPO
+   ========================================================= */
+
+.training-card__top {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 0.75rem;
 
-    padding: 1rem 1.15rem;
-    border-bottom: 1px solid var(--color-border);
-
-    transition: background-color 150ms ease;
+    margin-bottom: 0.75rem;
 }
 
-.training-item:last-child {
-    border-bottom: 0;
+.training-card__badges {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
 }
 
-.training-item:hover {
-    background: var(--color-surface-2);
+.training-card__modality,
+.training-card__status {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 0.3rem 0.6rem;
+
+    border-radius: 0.375rem;
+
+    font-size: 0.68rem;
+    font-weight: 600;
 }
 
-.training-item strong,
-.training-item span {
-    display: block;
+.training-card__modality {
+    color: #ff5c5c;
+    background: #2a2025;
 }
 
-.training-item strong {
-    margin-bottom: 0.3rem;
-    color: #e8e9ec;
+.training-card__status {
+    color: var(--color-success);
+    background: var(--color-success-soft);
+}
+
+.training-card__cost {
+    flex-shrink: 0;
+
+    color: var(--color-text);
+
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.training-card__cost--free {
+    color: var(--color-success);
+}
+
+
+/* =========================================================
+   CARD DE TREINO - TÍTULO
+   ========================================================= */
+
+.training-card__title {
+    margin: 0 0 0.9rem;
+
+    color: #f4f5f7;
+
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   CARD DE TREINO - INFORMAÇÕES
+   ========================================================= */
+
+.training-card__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+
+    margin-bottom: 0.9rem;
+}
+
+.training-card__info-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+
+    color: var(--color-text-muted);
+
+    font-size: 0.75rem;
+    line-height: 1.3;
+}
+
+.training-card__info-icon {
+    width: 0.9rem;
+
+    color: #697484;
+
+    text-align: center;
     font-size: 0.8rem;
 }
 
-.training-item span {
-    color: #68707e;
+.training-card__info strong {
+    color: #8791a1;
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   CARD DE TREINO - PARTICIPANTES
+   ========================================================= */
+
+.training-card__participants {
+    margin-top: 0.1rem;
+}
+
+.training-card__participants-text {
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 0.4rem;
+
+    color: var(--color-text-muted);
+
+    font-size: 0.68rem;
+}
+
+.training-card__participants-text strong {
+    color: #8993a2;
+    font-weight: 500;
+}
+
+.training-card__progress {
+    width: 100%;
+    height: 0.25rem;
+
+    overflow: hidden;
+
+    background: var(--color-progress-background);
+
+    border-radius: 999px;
+}
+
+.training-card__progress-bar {
+    height: 100%;
+
+    background: var(--color-brand);
+
+    border-radius: inherit;
+}
+
+
+/* =========================================================
+   CARD DE TREINO - RODAPÉ
+   ========================================================= */
+
+.training-card__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+
+    margin-top: auto;
+    padding-top: 0.9rem;
+
+    border-top: 1px solid #242c37;
+}
+
+.training-card__creator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    min-width: 0;
+}
+
+.training-card__creator-avatar,
+.training-card__creator-placeholder {
+    flex-shrink: 0;
+
+    width: 1.55rem;
+    height: 1.55rem;
+
+    border-radius: 50%;
+}
+
+.training-card__creator-avatar {
+    display: block;
+
+    object-fit: cover;
+}
+
+.training-card__creator-placeholder {
+    display: grid;
+    place-items: center;
+
+    color: #c9ced6;
+    background: #303947;
+
+    font-size: 0.625rem;
+    font-weight: 600;
+}
+
+.training-card__creator-name {
+    overflow: hidden;
+
+    color: var(--color-text-muted);
+
+    font-size: 0.75rem;
+
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.training-card__button {
+    flex-shrink: 0;
+
+    padding: 0.4rem 0.75rem;
+
+    color: #d7dbe1;
+    background: #1d2531;
+
+    border-radius: 0.5rem;
+
+    font-size: 0.68rem;
+    font-weight: 500;
+
+    transition: background-color var(--transition);
+}
+
+.training-card:hover .training-card__button {
+    background: #26303e;
+}
+
+
+/* =========================================================
+   EDIÇÃO DO PERFIL
+   ========================================================= */
+
+.profile-edit-card {
+    margin-bottom: 1.25rem;
+    padding: 1.5rem;
+
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+}
+
+.profile-edit-card__header {
+    margin-bottom: 1.25rem;
+}
+
+.profile-edit-card__header h2 {
+    margin: 0;
+
+    color: var(--color-text);
+
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   FORMULÁRIO
+   ========================================================= */
+
+.profile-edit-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.1rem 1rem;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+}
+
+.form-field label {
+    color: #8b95a5;
+
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.form-field input {
+    width: 100%;
+    padding: 0.75rem 0.875rem;
+
+    color: var(--color-text);
+    background: var(--color-input);
+
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.625rem;
+    outline: none;
+
+    font: inherit;
+    font-size: 0.8rem;
+
+    transition: border-color var(--transition);
+}
+
+.form-field input:focus {
+    border-color: var(--color-brand);
+}
+
+.form-field input::placeholder {
+    color: #687282;
+}
+
+
+/* =========================================================
+   SELETOR DE MODALIDADES
+   ========================================================= */
+
+.form-field--modalidades {
+    margin-top: 1.4rem;
+}
+
+.modality-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.modality-option {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+
+    cursor: pointer;
+}
+
+.modality-option input {
+    position: absolute;
+
+    width: 1px;
+    height: 1px;
+
+    opacity: 0;
+}
+
+.modality-option span {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 0.55rem 0.8rem;
+
+    color: #7f8999;
+    background: var(--color-input);
+
+    border: 1px solid var(--color-border-light);
+    border-radius: 0.5rem;
+
+    font-size: 0.75rem;
+    font-weight: 500;
+
+    transition:
+        background-color var(--transition),
+        border-color var(--transition),
+        color var(--transition);
+}
+
+.modality-option:hover span {
+    border-color: #485363;
+}
+
+.modality-option input:checked + span {
+    color: #fff;
+    background: var(--color-brand);
+    border-color: var(--color-brand);
+}
+
+
+/* =========================================================
+   AÇÕES DO FORMULÁRIO
+   ========================================================= */
+
+.profile-edit-actions {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 0.75rem;
+
+    margin-top: 1.5rem;
+}
+
+.profile-edit-actions .button {
+    min-height: 2.75rem;
+
+    border-radius: 0.55rem;
+
+    font-size: 0.8rem;
+}
+
+.button--cancel {
+    color: var(--color-text-muted);
+    background: transparent;
+    border: 1px solid var(--color-border-light);
+}
+
+.button--cancel:hover {
+    color: #c8ced6;
+    background: #1a2029;
+}
+
+.button--save {
+    color: #fff;
+    background: var(--color-brand);
+    border: 1px solid var(--color-brand);
+}
+
+.button--save:hover {
+    background: var(--color-brand-hover);
+}
+
+
+/* =========================================================
+   ERROS DE FORMULÁRIO
+   ========================================================= */
+
+.form-error {
+    color: #ef6262;
     font-size: 0.7rem;
 }
 
-.training-item__arrow {
-    color: var(--color-brand-500) !important;
-    font-size: 1rem !important;
-}
+
+/* =========================================================
+   RESPONSIVIDADE
+   ========================================================= */
 
 @media (max-width: 55rem) {
+
     .topbar {
         grid-template-columns: 1fr auto;
     }
@@ -548,7 +1132,17 @@ a {
     }
 }
 
+
+@media (max-width: 50rem) {
+
+    .training-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+
 @media (max-width: 38rem) {
+
     .topbar {
         padding: 0 0.9rem;
     }
@@ -603,5 +1197,17 @@ a {
 
     .tab {
         flex-shrink: 0;
+    }
+
+    .profile-edit-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-edit-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .training-card {
+        min-height: 0;
     }
 }
