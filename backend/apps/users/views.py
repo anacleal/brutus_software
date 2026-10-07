@@ -3,7 +3,9 @@ from datetime import datetime
 from .forms import UsuarioPerfilForm
 
 from django.http import HttpResponse 
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect
 
 from apps.users.models import Usuario
@@ -11,7 +13,15 @@ from apps.treinos.models import Treino
 
 
 def login_view(request):
-    return HttpResponse("Login")
+    if request.method == 'POST': #GET mostra o formulario, POST confere usuario e senha
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid(): #confere se o usuario existe e se a senha bate
+            login(request, form.get_user()) #cria a sessao que o @login_required confere depois
+            return redirect('dashboard')
+        return render(request, 'users/login.html', {'form': form}, status=401) #login errado volta a mesma pagina com a mensagem, mas com status 401 (nao autorizado)
+    else:
+        form = AuthenticationForm(request)
+    return render(request, 'users/login.html', {'form': form})
 
 
 def cadastro_view(request):
