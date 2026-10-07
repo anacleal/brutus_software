@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Início - Brutus{% endblock %}
+
+{% block content %}
+{% include 'header.html' %}
+
+<main class="dashboard">
+    <section class="proximos">
+        <div class="proximos__topo">
+            <div>
+                <h2>Seus próximos treinos</h2>
+                {% if proximos_treinos %}
+                <p>{{ proximos_treinos|length }} treino{{ proximos_treinos|length|pluralize }} agendado{{ proximos_treinos|length|pluralize }}</p> {# pluralize poe o s quando e mais de um #}
+                {% endif %}
+            </div>
+            <a href="{% url 'treinos' %}" class="proximos__ver-todos">
+                Ver todos
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+        </div>
+
+        {% if proximos_treinos %}
+        <div class="proximos__lista">
+            {% for training in proximos_treinos %}
+                {% include 'users/components/treino_card.html' with training=training card_type='upcoming' %} {# upcoming mostra o selo de inscrito #}
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="proximos__vazio">Nenhum treino agendado</p>
+        {% endif %}
+    </section>
+</main>
+{% endblock %}
