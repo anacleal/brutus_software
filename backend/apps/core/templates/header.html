@@ -252,6 +252,11 @@
         transition: color .15s ease, background .15s ease;
     }
 
+    .logout-form {
+        display: inline-flex;
+        margin: 0 4px;
+    }
+
     .logout-btn:hover {
         color: var(--text-60);
         background: var(--white-5);
@@ -424,7 +429,9 @@
 
         <div class="divider"></div>
 
-        <button class="logout-btn" title="Sair" onclick="logout()">
+        <form class="logout-form" method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="logout-btn" type="submit" title="Sair" aria-label="Sair">
 
             <svg class="icon" width="16" height="16" viewBox="0 0 24 24">
                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
@@ -432,7 +439,8 @@
                 <line x1="21" y1="12" x2="9" y2="12" />
             </svg>
 
-        </button>
+            </button>
+        </form>
 
     </div>
 
@@ -485,6 +493,17 @@
                 </div>
 
             </button>
+
+            <form class="logout-form" method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="logout-btn" type="submit" title="Sair" aria-label="Sair">
+                    <svg class="icon" width="16" height="16" viewBox="0 0 24 24">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                </button>
+            </form>
 
         </div>
 
@@ -702,13 +721,6 @@
         if (route) {
             window.location.href = route;
         }
-
-    }
-
-
-    function logout() {
-
-        alert("Sessão encerrada.");
 
     }
 
