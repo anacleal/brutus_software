@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Início - Brutus{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="{% static 'css/treino_card.css' %}">
+<link rel="stylesheet" href="{% static 'core/css/dashboard.css' %}">
+{% endblock %}
 
 {% block content %}
 {% include 'header.html' %}
