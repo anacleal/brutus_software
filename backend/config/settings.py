@@ -132,3 +132,7 @@ MAILERS = {
 LOGIN_URL = 'login' #pra onde o @login_required redireciona quem nao ta logado
 LOGOUT_REDIRECT_URL = 'login'
 AUTHENTICATION_BACKENDS = ['apps.users.backends.EmailOuUsuarioBackend']
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG

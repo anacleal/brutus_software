@@ -26,6 +26,7 @@
 
 <form method="post">
     {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
 
     <label for="username">Usuário ou e-mail</label>
     <input type="text" name="username" id="username" placeholder="seu@email.edu.br" required autofocus>
