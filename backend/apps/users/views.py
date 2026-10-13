@@ -6,8 +6,9 @@ from django.shortcuts import redirect, render
 from django import forms
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
+from django.views.decorators.cache import never_cache
 
-from .services import solicitar_reset_senha
+from .services import SenhaInvalidaError, TokenInvalidoError, redefinir_senha, solicitar_reset_senha, token_esta_valido
 
 
 def login_view(request):
@@ -58,3 +59,44 @@ def solicitar_reset_senha_view(request):
 
 def esqueci_senha_view(request):
     return render(request, 'users/esqueci_senha.html') #so mostra a tela; quem processa o e-mail e o endpoint solicitar_reset_senha_view
+
+MENSAGEM_TOKEN_INVALIDO = "Link inválido ou expirado. Peça um novo link de redefinição."
+ 
+ 
+class RedefinirSenhaForm(forms.Form):
+    token = forms.CharField()
+    nova_senha = forms.CharField(strip=False) #strip=False: espaco no comeco/fim faz parte da senha
+    confirmacao = forms.CharField(strip=False)
+ 
+    def clean(self):
+        dados = super().clean()
+        nova, confirmacao = dados.get('nova_senha'), dados.get('confirmacao')
+        if nova and confirmacao and nova != confirmacao:
+            self.add_error('confirmacao', 'As senhas não coincidem.')
+        return dados
+ 
+ 
+@never_cache #a URL carrega o token: a pagina nao pode ficar guardada em cache
+def redefinir_senha_view(request):
+    token = request.GET.get('token', '')
+    return render(request, 'users/redefinir_senha.html', {
+        'token': token,
+        'token_valido': token_esta_valido(token), #se for invalido, a tela mostra o aviso em vez do formulario
+    })
+ 
+ 
+@require_POST
+def confirmar_reset_senha_view(request):
+    form = RedefinirSenhaForm(request.POST)
+    if not form.is_valid():
+        mensagens = [msg for erros in form.errors.values() for msg in erros]
+        return JsonResponse({'detail': ' '.join(mensagens)}, status=400)
+ 
+    try:
+        redefinir_senha(form.cleaned_data['token'], form.cleaned_data['nova_senha'])
+    except TokenInvalidoError:
+        return JsonResponse({'detail': MENSAGEM_TOKEN_INVALIDO}, status=400) #mesma mensagem para inexistente, expirado e usado
+    except SenhaInvalidaError as erro:
+        return JsonResponse({'detail': ' '.join(erro.mensagens)}, status=400) #regras de senha do Django (tamanho, muito comum...)
+ 
+    return JsonResponse({'detail': 'Senha alterada com sucesso! Você já pode entrar com a nova senha.'})
