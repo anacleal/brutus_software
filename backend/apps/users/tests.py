@@ -71,3 +71,16 @@ class AuthenticationSessionTests(TestCase):
         )
 
         self.assertRedirects(response, reverse('dashboard'))
+
+
+class LoginCadastroNavigationTests(TestCase):
+    def test_login_links_to_cadastro(self):
+        response = self.client.get(reverse('login'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, f'href="{reverse("cadastro")}"')
+
+    def test_cadastro_opens_without_session(self):
+        response = self.client.get(reverse('cadastro'))
+
+        self.assertEqual(response.status_code, 200)
