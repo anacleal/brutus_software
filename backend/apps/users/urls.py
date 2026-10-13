@@ -8,5 +8,7 @@ urlpatterns = [
     path('cadastro/', views.cadastro_view, name='cadastro'),
     path('perfil/', views.perfil_view, name='perfil'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    path("senha/esqueci/", views.solicitar_reset_senha_view, name="senha-esqueci"),
+    path("esqueci-senha/", views.esqueci_senha_view, name="esqueci-senha"),
 ]
 #declarando a rota de cada pagina
