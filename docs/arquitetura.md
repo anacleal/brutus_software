@@ -40,6 +40,12 @@ e editar perfil).
   visualização e edição de perfil.
 - `forms.py` (se usar templates Django) — formulário de cadastro/edição.
 - `urls.py` — rotas `/auth/...` e `/perfil/...`.
+- A autenticação usa sessões nativas do Django: o navegador guarda apenas o
+  identificador da sessão em cookie `HttpOnly`/`SameSite=Lax`, e os dados de
+  sessão ficam no backend de sessões do Django. A sessão persiste entre
+  páginas e atualizações; páginas protegidas redirecionam para o login quando
+  ela não existe ou expira. O logout deve ser enviado por `POST` com CSRF e
+  invalida a sessão antes de redirecionar para o login.
 
 ---
 
