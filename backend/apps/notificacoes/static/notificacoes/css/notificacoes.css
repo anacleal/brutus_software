@@ -1,0 +1,148 @@
+/* Painel de notificações.
+   Pensado para o tema escuro da Brutus. Usa as variáveis de cor da página quando elas
+   existem (--accent, --accent-active, --white-5, --white-8, --text-*) e, se não existirem,
+   cai nos valores depois da vírgula: assim o painel também funciona em outras telas. */
+
+/* Painel flutuante: nasce fechado (atributo hidden) e abre ao clicar no sino. */
+.notificacoes {
+    position: fixed;
+    z-index: 60; /* acima do cabeçalho fixo da página (z-index 50) */
+    top: 3.25rem; /* celular: logo abaixo da barra de topo */
+    right: 1rem;
+    left: 1rem;
+    max-height: min(70vh, 32rem);
+    overflow-y: auto;
+    margin: 0;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--white-8, rgba(255, 255, 255, 0.08));
+    border-radius: 0.75rem;
+    background: #121722; /* opaco: o conteúdo da página não pode aparecer por trás */
+    box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.5);
+    color: var(--text-80, rgba(255, 255, 255, 0.8));
+    text-align: left; /* a página centraliza o texto; o painel é uma lista, fica à esquerda */
+}
+
+.notificacoes:focus {
+    outline: none;
+}
+
+@media (min-width: 1024px) {
+    .notificacoes {
+        top: 5rem; /* valor de reserva: o JavaScript posiciona abaixo do cabeçalho ao abrir */
+        right: 2rem;
+        left: auto;
+        width: 24rem;
+    }
+}
+
+.notificacoes__cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.notificacoes__heading {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    color: #fff;
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.notificacoes__icone {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* Indicador de não lidas */
+.notificacoes__contador {
+    min-width: 1.375rem;
+    padding: 0 0.4rem;
+    border-radius: 999px;
+    background: var(--accent, #c0392b);
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1.375rem;
+    text-align: center;
+}
+
+.notificacoes__acao {
+    padding: 0.4rem 0.75rem;
+    border: 1px solid var(--white-8, rgba(255, 255, 255, 0.08));
+    border-radius: 0.5rem;
+    background: transparent;
+    color: var(--text-60, rgba(255, 255, 255, 0.6));
+    font: inherit;
+    font-size: 0.8125rem;
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+}
+
+.notificacoes__acao:hover {
+    background: var(--white-5, rgba(255, 255, 255, 0.05));
+    color: #fff;
+}
+
+.notificacoes__acao:focus-visible {
+    outline: 2px solid var(--accent-active, #e05a4a);
+    outline-offset: 2px;
+}
+
+.notificacoes__lista {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.notificacao {
+    padding: 0.65rem 0.85rem;
+    border-left: 3px solid transparent;
+    border-radius: 0.5rem;
+    background: var(--white-5, rgba(255, 255, 255, 0.05));
+}
+
+/* Não lida: faixa vermelha e fundo levemente avermelhado */
+.notificacao--nova {
+    border-left-color: var(--accent-active, #e05a4a);
+    background: rgba(224, 90, 74, 0.1);
+}
+
+.notificacao__titulo {
+    color: #fff;
+    font-weight: 700;
+}
+
+.notificacao__titulo a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.notificacao__titulo a:hover {
+    text-decoration: underline;
+}
+
+.notificacao__mensagem {
+    margin: 0.25rem 0 0;
+    color: var(--text-60, rgba(255, 255, 255, 0.6));
+    font-size: 0.875rem;
+}
+
+.notificacao__data {
+    display: block;
+    margin-top: 0.35rem;
+    color: var(--text-40, rgba(255, 255, 255, 0.4));
+    font-size: 0.75rem;
+}
+
+.notificacoes__vazio {
+    margin: 0;
+    color: var(--text-50, rgba(255, 255, 255, 0.5));
+    font-size: 0.875rem;
+}

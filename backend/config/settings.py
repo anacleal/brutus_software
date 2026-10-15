@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.users', #adicionando aqui pra reconhecer
     'apps.core',
-    'apps.treinos'
+    'apps.treinos',
+    'apps.notificacoes',
 ]
 
 MIDDLEWARE = [
