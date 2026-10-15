@@ -1,0 +1,389 @@
+/* Seção de treinos recomendados */
+
+.recomendados {
+    width: 100%;
+    margin-top: var(--space-7, 3rem);
+    color: #f7f8fa;
+}
+
+.recomendados__topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.recomendados__topo h2 {
+    margin: 0;
+    color: #f7f8fa;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.recomendados__topo p {
+    margin: 0.35rem 0 0;
+    color: #7f899a;
+    font-size: 0.875rem;
+}
+
+.recomendados__ver-todos {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: #7f899a;
+    font-size: 0.875rem;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+}
+
+.recomendados__ver-todos:hover {
+    color: #f7f8fa;
+}
+
+.recomendados__ver-todos span {
+    font-size: 1.4rem;
+    line-height: 1;
+}
+
+/* Grade */
+
+.recomendados__lista {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+/* Card */
+
+.treino-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 1.25rem;
+    background: #151922;
+    border: 1px solid #273142;
+    border-radius: 0.8rem;
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.treino-card:hover {
+    border-color: #3a4659;
+    transform: translateY(-2px);
+}
+
+.treino-card__topo {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+    min-height: 1.6rem;
+}
+
+.treino-card__etiquetas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.treino-card__modalidade,
+.treino-card__status {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.4rem;
+    font-size: 0.7rem;
+    line-height: 1.2;
+}
+
+.treino-card__modalidade {
+    color: #ff9ba8;
+    background: #382027;
+}
+
+.treino-card__status {
+    color: #b3bdcc;
+    background: #242b36;
+}
+
+.treino-card__preco {
+    flex-shrink: 0;
+    color: #f7f8fa;
+    font-size: 0.875rem;
+    white-space: nowrap;
+}
+
+.treino-card__preco--gratuito {
+    color: #25e68a;
+}
+
+.treino-card__titulo {
+    margin: 1rem 0 0.8rem;
+    color: #f7f8fa;
+    font-size: 1.05rem;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* Informações do treino */
+
+.treino-card__detalhes {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    color: #8792a4;
+    font-size: 0.78rem;
+}
+
+.treino-card__detalhes p {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+    line-height: 1.35;
+}
+
+.treino-card__icone {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    color: #687386;
+    font-size: 0.95rem;
+}
+
+.treino-card__vagas {
+    color: #ffb000;
+    white-space: nowrap;
+}
+
+/* Barra de ocupação */
+
+.treino-card__progresso {
+    overflow: hidden;
+    width: 100%;
+    height: 4px;
+    margin: 1rem 0;
+    background: #252d3b;
+    border-radius: 999px;
+}
+
+.treino-card__progresso span {
+    display: block;
+    height: 100%;
+    background: #873b3d;
+    border-radius: inherit;
+    transition: width 0.3s ease;
+}
+
+.treino-card__progresso--ilimitado span {
+    width: 100%;
+    background: #394253;
+}
+
+/* Rodapé e criador */
+
+.treino-card__rodape {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: auto;
+}
+
+.treino-card__criador {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-width: 0;
+    color: #8792a4;
+    font-size: 0.78rem;
+}
+
+.treino-card__criador > span:last-child {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.treino-card__avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 1.4rem;
+    height: 1.4rem;
+    color: #c5d6ff;
+    background: #29364c;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    font-weight: 600;
+}
+
+.treino-card__botao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    padding: 0.5rem 0.8rem;
+    color: #cbd3df;
+    background: #222936;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    font-size: 0.72rem;
+    text-decoration: none;
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.treino-card__botao:hover {
+    color: #ffffff;
+    background: #303a4b;
+}
+
+/* Estado vazio */
+
+.recomendados__vazio {
+    padding: 2rem;
+    text-align: center;
+    background: #151922;
+    border: 1px solid #273142;
+    border-radius: 0.8rem;
+}
+
+.recomendados__vazio h3 {
+    margin: 0 0 0.6rem;
+    color: #f7f8fa;
+    font-size: 1rem;
+}
+
+.recomendados__vazio p {
+    max-width: 36rem;
+    margin: 0 auto 1.25rem;
+    color: #8792a4;
+    font-size: 0.875rem;
+    line-height: 1.6;
+}
+
+/* Responsividade */
+
+@media (max-width: 1000px) {
+    .recomendados__lista {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .recomendados__lista {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .recomendados__topo {
+        align-items: flex-start;
+    }
+
+    .treino-card {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 380px) {
+    .recomendados__topo {
+        flex-direction: column;
+    }
+
+    .treino-card__topo {
+        flex-direction: column;
+    }
+
+    .treino-card__rodape {
+        align-items: flex-start;
+    }
+}
+
+/* Ajuste de largura e tamanho da seção de recomendados */
+
+.recomendados {
+    width: 100%;
+    max-width: 1216px;
+    margin: 0 auto;
+    margin-top: 2rem;
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+.recomendados__topo {
+    margin-bottom: 1rem;
+}
+
+.recomendados__topo h2 {
+    font-size: 1.25rem;
+}
+
+.recomendados__topo p {
+    font-size: 0.875rem;
+}
+
+.recomendados__lista {
+    gap: 1rem;
+}
+
+.treino-card {
+    padding: 1.1rem;
+    border-radius: 0.75rem;
+}
+
+.treino-card__titulo {
+    margin: 0.8rem 0 0.65rem;
+    font-size: 1rem;
+}
+
+.treino-card__detalhes {
+    gap: 0.35rem;
+    font-size: 0.75rem;
+}
+
+.treino-card__progresso {
+    margin: 0.85rem 0;
+}
+
+.treino-card__criador {
+    font-size: 0.75rem;
+}
+
+.treino-card__botao {
+    padding: 0.45rem 0.7rem;
+    font-size: 0.7rem;
+}
+
+/* Estado vazio mais compacto */
+
+.recomendados__vazio {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+}
+
+.recomendados__vazio h3 {
+    font-size: 0.95rem;
+}
+
+.recomendados__vazio p {
+    margin-bottom: 1rem;
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+@media (max-width: 650px) {
+    .recomendados {
+        padding: 0 0.75rem;
+    }
+
+    .recomendados__vazio {
+        padding: 1.25rem 1rem;
+    }
+}

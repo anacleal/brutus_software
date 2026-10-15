@@ -1,0 +1,123 @@
+{% load static %}
+
+<section class="recomendados">
+    <div class="recomendados__topo">
+        <div>
+            <h2>Treinos recomendados</h2>
+            <p>Baseado na sua modalidade favorita — Musculação</p>
+        </div>
+
+        <a href="{% url 'treinos' %}" class="recomendados__ver-todos">
+            Ver todos <span aria-hidden="true">›</span>
+        </a>
+    </div>
+
+    {% if treinos_recomendados %}
+        <div class="recomendados__lista">
+            {% for treino in treinos_recomendados %}
+                <article class="treino-card">
+                    <div class="treino-card__topo">
+                        <div class="treino-card__etiquetas">
+                            <span class="treino-card__modalidade">
+                                {{ treino.modalidade.nome }}
+                            </span>
+
+                            {% if treino.lotado %}
+                                <span class="treino-card__status">
+                                    Lotado
+                                </span>
+                            {% endif %}
+                        </div>
+
+                        <span class="treino-card__preco
+                            {% if not treino.custo %} treino-card__preco--gratuito{% endif %}">
+                            {% if treino.custo %}
+                                R$ {{ treino.custo|floatformat:2 }}
+                            {% else %}
+                                Gratuito
+                            {% endif %}
+                        </span>
+                    </div>
+
+                    <h3 class="treino-card__titulo">
+                        {{ treino.nome }}
+                    </h3>
+
+                    <div class="treino-card__detalhes">
+                        <p>
+                            <span class="treino-card__icone" aria-hidden="true">▦</span>
+                            <span>{{ treino.data_hora|date:"D, d \d\e M." }}</span>
+                            <span class="treino-card__icone" aria-hidden="true">◷</span>
+                            <span>{{ treino.data_hora|date:"H:i" }}</span>
+                        </p>
+
+                        <p>
+                            <span class="treino-card__icone" aria-hidden="true">◎</span>
+                            <span>{{ treino.local }}</span>
+                        </p>
+
+                        <p>
+                            <span class="treino-card__icone" aria-hidden="true">♧</span>
+                            <span>
+                                {{ treino.total_participantes|default:0 }}{% if treino.limite_participantes %}/{{ treino.limite_participantes }}{% endif %} participantes
+                            </span>
+
+                            {% if treino.vagas_restantes is not None and treino.vagas_restantes > 0 and treino.vagas_restantes <= 3 %}
+                                <span class="treino-card__vagas">
+                                    · {{ treino.vagas_restantes }} vagas
+                                </span>
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    {% if treino.limite_participantes %}
+                        <div
+                            class="treino-card__progresso"
+                            role="progressbar"
+                            aria-label="Ocupação do treino"
+                            aria-valuemin="0"
+                            aria-valuemax="{{ treino.limite_participantes }}"
+                            aria-valuenow="{{ treino.total_participantes|default:0 }}"
+                        >
+                            <span style="width: {% widthratio treino.total_participantes|default:0 treino.limite_participantes 100 %}%;"></span>
+                        </div>
+                    {% else %}
+                        <div class="treino-card__progresso treino-card__progresso--ilimitado">
+                            <span></span>
+                        </div>
+                    {% endif %}
+
+                    <div class="treino-card__rodape">
+                        <div class="treino-card__criador">
+                            <span class="treino-card__avatar" aria-hidden="true">
+                                {{ treino.criador.nome|first|upper }}
+                            </span>
+                            <span>
+                                {{ treino.criador.nome }} {{ treino.criador.sobrenome }}
+                            </span>
+                        </div>
+
+                        <a
+                            href="{% url 'treinos' %}"
+                            class="treino-card__botao"
+                        >
+                            Ver treino
+                        </a>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="recomendados__vazio">
+            <h3>Nenhuma recomendação disponível</h3>
+            <p>
+                No momento, não encontramos treinos disponíveis para as
+                modalidades que você pratica. Volte mais tarde para conferir
+                novas oportunidades!
+            </p>
+            <a href="{% url 'treinos' %}" class="treino-card__botao">
+                Explorar todos os treinos
+            </a>
+        </div>
+    {% endif %}
+</section>
