@@ -44,7 +44,7 @@
             <span class="training-card__info-icon">📅</span>
 
             <strong>
-                {{ training.data_hora|date:"d/m/Y" }}
+                {{ training.data_hora|date:"l"|slice:":3"|lower }}., {{ training.data_hora|date:"d \d\e b." }}
             </strong>
 
             <span>•</span>
