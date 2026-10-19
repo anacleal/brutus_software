@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 from pathlib import Path
+#import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -131,6 +132,19 @@ MAILERS = {
     },
 }
 
+# MAILERS = {
+#     'default': {
+#         'BACKEND': 'django.core.mail.backends.smtp.EmailBackend',
+#         'OPTIONS': {
+#             'host': os.environ['EMAIL_HOST'],
+#             'use_tls': True,
+#             'username': os.environ['EMAIL_USER'],
+#             'password': os.environ['EMAIL_PASSWORD'],
+#             'timeout': 10, #sem timeout, um SMTP travado trava o pedido inteiro
+#         },
+#     },
+# }
+
 LOGIN_URL = 'login' #pra onde o @login_required redireciona quem nao ta logado
 LOGOUT_REDIRECT_URL = 'login'
 AUTHENTICATION_BACKENDS = ['apps.users.backends.EmailOuUsuarioBackend']
@@ -138,3 +152,5 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
+SITE_URL = 'http://localhost:8000' #base dos links enviados por e-mail; em producao vem de variavel de ambiente
+DEFAULT_FROM_EMAIL = 'Brutus <nao-responda@brutus.local>'

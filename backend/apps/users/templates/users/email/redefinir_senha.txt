@@ -1,0 +1,11 @@
+{% autoescape off %}Olá{% if usuario.first_name %}, {{ usuario.first_name }}{% endif %}!
+
+Recebemos um pedido para redefinir a senha da sua conta na Brutus.
+Para criar uma nova senha, acesse o link abaixo (ele vale por 30 minutos e só pode ser usado uma vez):
+
+{{ link }}
+
+Se você não fez esse pedido, ignore este e-mail: sua senha continua a mesma.
+
+Atlética Brutus
+{% endautoescape %}
