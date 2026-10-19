@@ -40,8 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.users', #adicionando aqui pra reconhecer
     'apps.core',
-    'apps.treinos'
+    'apps.treinos',
+    'apps.modalidades'
 ]
+
+AUTH_USER_MODEL = 'users.Usuario' # Usar o usuário customizado definido no models.py do app users
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -101,7 +104,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/6.1/topics/i18n/
