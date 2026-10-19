@@ -22,7 +22,7 @@
 
         {% if training.custo %}
             <span class="training-card__cost">
-                R$ {{ training.custo }},00
+                R$ {{ training.custo|floatformat:2 }}
             </span>
         {% else %}
             <span class="training-card__cost training-card__cost--free">
