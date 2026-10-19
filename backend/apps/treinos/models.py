@@ -1,24 +1,12 @@
 from django.conf import settings
 from django.db import models
 
-
-class ModalidadeEsportiva(models.Model):
-    id = models.AutoField(primary_key=True)
-    nome = models.CharField(max_length=100, unique=True)
-    descricao = models.TextField(blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        db_table = "modalidades_esportivas"
-
-    def __str__(self):
-        return self.nome
-
+from backend.apps.modalidades.models import ModalidadeEsportiva
 
 class Treino(models.Model):
     id = models.AutoField(primary_key=True)
     criador = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        'users.Usuario',
         db_column="criador",
         on_delete=models.PROTECT,
         related_name="treinos_criados",
