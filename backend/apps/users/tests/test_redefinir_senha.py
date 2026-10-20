@@ -17,7 +17,7 @@ class RedefinirSenhaBase(TestCase):
         self.url_tela = reverse("redefinir-senha")
         self.url_endpoint = reverse("senha-redefinir")
         self.usuario = get_user_model().objects.create_user(
-            username="ana", email="ana@exemplo.com", password=SENHA_ANTIGA
+            usuario="ana", email="ana@exemplo.com", nome="Ana", sobrenome="S", e_socio=False, password=SENHA_ANTIGA
         )
         # o service devolve o token em texto puro (o banco guarda só o hash)
         self.token = solicitar_reset_senha("ana@exemplo.com")
