@@ -17,7 +17,7 @@ class EmailRedefinicaoTests(TestCase):
     def setUp(self):
         self.url = reverse("senha-esqueci")
         self.usuario = get_user_model().objects.create_user(
-            email="ana@exemplo.com", username="ana", first_name="Ana"
+            usuario="ana", email="ana@exemplo.com", nome="Ana", sobrenome="S", e_socio=False
         )
 
     def test_envia_email_com_link_valido(self):
