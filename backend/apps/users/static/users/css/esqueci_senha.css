@@ -1,0 +1,20 @@
+.mensagem {
+    margin: 1rem 0 0;
+    padding: 0.75rem 1rem;
+    color: #171a21;
+    background: #f7f8fa;
+    border: 1px solid #e4e7ec;
+    border-radius: 0.5rem;
+    line-height: 1.5;
+}
+
+.mensagem--erro {
+    color: #80392b;
+    background: #fde8ec;
+    border-color: #ed3b57;
+}
+
+#form-esqueci-senha button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}

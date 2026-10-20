@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Recuperar senha - Brutus{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="{% static 'users/css/login.css' %}"> {# reaproveita o visual do login #}
+<link rel="stylesheet" href="{% static 'users/css/esqueci_senha.css' %}"> {# so o que e especifico desta tela #}
+{% endblock %}
+
+{% block content %}
+<div class="marca">
+    <div class="marca__selo">B</div>
+    <div>
+        <div class="marca__nome">Brutus</div>
+        <div class="marca__lema">Atlética Universitária</div>
+    </div>
+</div>
+
+<h1>Esqueceu a senha?</h1>
+<p>Informe o e-mail da sua conta para receber as instruções de redefinição.</p>
+
+{# sem JavaScript o form ainda envia direto ao endpoint; com JavaScript o envio é feito por fetch (abaixo) #}
+<form id="form-esqueci-senha" method="post" action="{% url 'senha-esqueci' %}">
+    {% csrf_token %}
+
+    <label for="email">E-mail</label>
+    <input type="email" name="email" id="email" placeholder="seu@email.edu.br" autocomplete="email" required autofocus>
+
+    <button type="submit">Enviar</button>
+</form>
+
+{# aqui aparece a mensagem de confirmação (ou de erro) #}
+<p id="mensagem" class="mensagem" role="status" aria-live="polite" hidden></p>
+
+<div class="rodape">
+    <a href="{% url 'login' %}">Voltar para o login</a>
+</div>
+
+<script>
+    const form = document.getElementById('form-esqueci-senha');
+    const campoEmail = document.getElementById('email');
+    const mensagem = document.getElementById('mensagem');
+    const botao = form.querySelector('button[type="submit"]');
+
+    // mesmas mensagens em português do login, mas diferenciando campo vazio de e-mail mal formatado
+    campoEmail.addEventListener('invalid', () => {
+        campoEmail.setCustomValidity(
+            campoEmail.validity.valueMissing ? 'Por favor, preencha este campo.' : 'Informe um e-mail válido.'
+        );
+    });
+    campoEmail.addEventListener('input', () => {
+        campoEmail.setCustomValidity('');
+    });
+
+    function mostrar(texto, erro = false) {
+        mensagem.textContent = texto;
+        mensagem.className = erro ? 'mensagem mensagem--erro' : 'mensagem';
+        mensagem.hidden = false;
+    }
+
+    form.addEventListener('submit', async (evento) => {
+        evento.preventDefault(); // evita recarregar a página
+        botao.disabled = true; // evita clique duplo gerando dois pedidos
+        try {
+            // FormData já leva o campo email e o csrfmiddlewaretoken do {% csrf_token %}
+            const resposta = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+            if (resposta.ok) {
+                const dados = await resposta.json();
+                mostrar(dados.detail); // mensagem padronizada vinda do servidor
+                form.reset();
+            } else if (resposta.status === 400) {
+                mostrar('Informe um e-mail válido.', true);
+            } else {
+                mostrar('Não foi possível processar o pedido. Tente novamente em instantes.', true);
+            }
+        } catch (erro) {
+            mostrar('Não foi possível processar o pedido. Tente novamente em instantes.', true);
+        } finally {
+            botao.disabled = false;
+        }
+    });
+</script>
+{% endblock %}
