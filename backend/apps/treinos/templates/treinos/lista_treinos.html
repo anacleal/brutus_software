@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Treinos - Brutus{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="{% static 'css/treino_card.css' %}">
+<link rel="stylesheet" href="{% static 'treinos/css/lista_treinos.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'header_nav.html' %}
+
+<main class="lista-treinos">
+    <div class="lista-treinos__topo">
+        <h1>Treinos disponíveis</h1>
+        <p>{{ treinos|length }} treino{{ treinos|length|pluralize }} na plataforma</p>
+    </div>
+
+    <div class="lista-treinos__grade">
+        {% for training in treinos %}
+            {% include 'users/components/treino_card.html' with training=training card_type='lista' %}
+        {% endfor %}
+    </div>
+</main>
+{% endblock %}
