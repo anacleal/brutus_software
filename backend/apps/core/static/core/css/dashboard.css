@@ -1,0 +1,106 @@
+/* cores e medidas copiadas do figma (tela inicial) */
+
+/* o header.html tambem pinta o body, com o :has essa regra ganha dele so nessa tela */
+body:has(.dashboard) {
+  background: #0E1117;
+}
+
+.dashboard {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  color: #ffffff;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+.proximos {
+  margin-bottom: 2.5rem;
+}
+
+.proximos__topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.proximos__topo h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+}
+
+.proximos__topo p {
+  margin: 0.125rem 0 0;
+  color: rgb(255 255 255 / 35%);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.proximos__ver-todos {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: rgb(255 255 255 / 35%);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 150ms ease;
+}
+
+.proximos__ver-todos:hover {
+  color: #ffffff;
+}
+
+.proximos__ver-todos svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+/* no celular os cards ficam lado a lado com rolagem pro lado */
+.proximos__lista {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  margin: 0 -1rem;
+  padding: 0 1rem 0.5rem;
+}
+
+.proximos__lista > .training-card {
+  min-width: 280px;
+}
+
+.proximos__vazio {
+  margin: 0;
+  padding: 3.5rem 0;
+  color: rgb(255 255 255 / 20%);
+  background: #111520;
+  border: 1px solid #1E2A3C;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* a partir de 1024px vira grade de 3 colunas */
+@media (min-width: 64rem) {
+  .dashboard {
+    padding: 2.5rem 2rem;
+  }
+
+  .proximos__lista {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    overflow: visible;
+    margin: 0;
+    padding: 0 0 0.5rem;
+  }
+
+  .proximos__lista > .training-card {
+    min-width: 0;
+  }
+}
