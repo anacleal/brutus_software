@@ -1,6 +1,6 @@
 from django.db import models
 
-from backend.apps.modalidades.models import ModalidadeEsportiva
+from apps.modalidades.models import ModalidadeEsportiva
 
 class Treino(models.Model):
     id = models.AutoField(primary_key=True)
