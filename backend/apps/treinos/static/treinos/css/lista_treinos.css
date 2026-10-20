@@ -1,0 +1,56 @@
+/* cores e medidas copiadas do figma (tela de treinos) */
+
+body:has(.lista-treinos) {
+  background: #0E1117;
+}
+
+.lista-treinos {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  color: #ffffff;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+}
+
+.lista-treinos__topo {
+  margin-bottom: 1.75rem;
+}
+
+.lista-treinos__topo h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 700;
+}
+
+.lista-treinos__topo p {
+  margin: 0.25rem 0 0;
+  color: rgb(255 255 255 / 35%);
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+/* 1 coluna no celular, 2 no tablet e 3 no computador */
+.lista-treinos__grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+@media (min-width: 48rem) {
+  .lista-treinos__grade {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64rem) {
+  .lista-treinos {
+    padding: 2.5rem 2rem;
+  }
+
+  .lista-treinos__grade {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
