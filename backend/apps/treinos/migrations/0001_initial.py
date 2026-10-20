@@ -11,21 +11,10 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('modalidades', '0001_initial'),
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='ModalidadeEsportiva',
-            fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('nome', models.CharField(max_length=100, unique=True)),
-                ('descricao', models.TextField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-            ],
-            options={
-                'db_table': 'modalidades_esportivas',
-            },
-        ),
         migrations.CreateModel(
             name='Treino',
             fields=[
@@ -38,7 +27,7 @@ class Migration(migrations.Migration):
                 ('observacoes', models.TextField(blank=True, null=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('criador', models.ForeignKey(db_column='criador', on_delete=django.db.models.deletion.PROTECT, related_name='treinos_criados', to=settings.AUTH_USER_MODEL)),
-                ('modalidade', models.ForeignKey(db_column='modalidade_id', on_delete=django.db.models.deletion.PROTECT, related_name='treinos', to='treinos.modalidadeesportiva')),
+                ('modalidade', models.ForeignKey(db_column='modalidade_id', on_delete=django.db.models.deletion.PROTECT, related_name='treinos', to='modalidades.modalidadeesportiva')),
             ],
             options={
                 'db_table': 'treinos',
