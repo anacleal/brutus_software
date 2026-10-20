@@ -22,7 +22,7 @@
 
         {% if training.custo %}
             <span class="training-card__cost">
-                R$ {{ training.custo }},00
+                R$ {{ training.custo|floatformat:2 }}
             </span>
         {% else %}
             <span class="training-card__cost training-card__cost--free">
@@ -34,29 +34,33 @@
 
 
     <h3 class="training-card__title">
-        {{ training.local }}
+        {{ training.nome }}
     </h3>
 
 
     <div class="training-card__info">
 
-        <div class="training-card__info-row">
-            <span class="training-card__info-icon">📅</span>
+        <div class="training-card__info-row training-card__info-row--datetime">
+            <span class="training-card__info-group">
+                <svg class="training-card__info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
 
-            <strong>
-                {{ training.data_hora|date:"d/m/Y" }}
-            </strong>
+                <strong>
+                    {{ training.data_hora|date:"l"|slice:":3"|lower }}., {{ training.data_hora|date:"d \d\e b." }}
+                </strong>
+            </span>
 
-            <span>•</span>
+            <span class="training-card__info-group">
+                <svg class="training-card__info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
 
-            <strong>
-                {{ training.data_hora|date:"H:i" }}
-            </strong>
+                <strong>
+                    {{ training.data_hora|date:"H:i" }}
+                </strong>
+            </span>
         </div>
 
 
         <div class="training-card__info-row">
-            <span class="training-card__info-icon">📍</span>
+            <svg class="training-card__info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"/><circle cx="12" cy="11" r="3"/></svg>
 
             <strong>
                 {{ training.local }}
@@ -65,16 +69,10 @@
 
 
         <div class="training-card__info-row">
-            <span class="training-card__info-icon">👥</span>
+            <svg class="training-card__info-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
 
             <strong>
-                {{ training.inscricoes.count }}
-
-                {% if training.limite_participantes %}
-                    /{{ training.limite_participantes }}
-                {% endif %}
-
-                participantes
+                {{ training.inscricoes.count }}{% if training.limite_participantes %}/{{ training.limite_participantes }}{% endif %} participantes
             </strong>
         </div>
 
