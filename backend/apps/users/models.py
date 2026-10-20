@@ -56,7 +56,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     )
 
     cargo = models.CharField(max_length=100)
-    e_socio = models.BooleanField()
+    e_socio = models.BooleanField(default=False)
 
     created_at = models.DateTimeField(auto_now_add=True)
     
