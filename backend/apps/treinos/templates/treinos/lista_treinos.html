@@ -15,13 +15,29 @@
 <main class="lista-treinos">
     <div class="lista-treinos__topo">
         <h1>Treinos disponíveis</h1>
-        <p>{{ treinos|length }} treino{{ treinos|length|pluralize }} na plataforma</p>
+        <p>{{ treinos|length }} treino{{ treinos|length|pluralize }} disponíve{{ treinos|length|pluralize:"l,is" }}</p>
     </div>
 
-    <div class="lista-treinos__grade">
-        {% for training in treinos %}
-            {% include 'users/components/treino_card.html' with training=training card_type='lista' %}
-        {% endfor %}
-    </div>
+    {% if treinos %}
+        <div class="lista-treinos__grade">
+            {% for training in treinos %}
+                {% include 'users/components/treino_card.html' with training=training card_type='lista' %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="lista-treinos__vazio">Nenhum treino disponível no momento</p>
+    {% endif %}
+
+    {% if treinos_encerrados %}
+        <section class="lista-treinos__encerrados">
+            <h2>Encerrados</h2>
+
+            <div class="lista-treinos__grade">
+                {% for training in treinos_encerrados %}
+                    {% include 'users/components/treino_card.html' with training=training card_type='lista' %}
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
 </main>
 {% endblock %}

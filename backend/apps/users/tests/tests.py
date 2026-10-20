@@ -74,3 +74,21 @@ class AuthenticationSessionTests(TestCase):
         )
 
         self.assertRedirects(response, reverse('dashboard'))
+
+    def test_perfil_usa_o_template_do_perfil(self):
+        self.client.force_login(self.user)
+
+        response = self.client.get(reverse('perfil'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'users/perfil.html')
+        self.assertNotContains(response, 'em construção')
+
+    def test_dashboard_usa_o_template_do_dashboard(self):
+        self.client.force_login(self.user)
+
+        response = self.client.get(reverse('dashboard'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'core/dashboard.html')
+        self.assertNotContains(response, 'em construção')

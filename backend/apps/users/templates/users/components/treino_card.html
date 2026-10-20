@@ -1,4 +1,4 @@
-<a href="{% url 'treinos' %}" class="training-card">
+<a href="{% url 'treino_detalhe' training.id %}" class="training-card{% if training.encerrado %} training-card--encerrado{% endif %}">
 
     <div class="training-card__top">
 
@@ -14,11 +14,11 @@
                 </span>
             {% elif card_type == "lista" %}
                 {# na lista so aparece selo quando o treino nao aceita mais inscricao #}
-                {% if training.data_hora < agora %}
+                {% if training.encerrado %}
                     <span class="training-card__status training-card__status--indisponivel">
                         Encerrado
                     </span>
-                {% elif training.limite_participantes and training.inscricoes.count >= training.limite_participantes %}
+                {% elif training.lotado %}
                     <span class="training-card__status training-card__status--indisponivel">
                         Lotado
                     </span>

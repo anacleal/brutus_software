@@ -4,11 +4,12 @@ from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.urls import reverse
 from django.utils import timezone
 
 from apps.modalidades.models import ModalidadeEsportiva
 
-from .models import Treino
+from .models import InscricaoTreino, Treino
 
 
 class CriarTreinoEndpointTests(TestCase):
@@ -351,3 +352,131 @@ class CriarTreinoEndpointTests(TestCase):
             status_code=400,
         )
         self.assertEqual(Treino.objects.count(), 0)
+
+
+class ListarTreinosTests(TestCase):
+    def setUp(self):
+        user_model = get_user_model()
+        self.usuario = user_model.objects.create_user(
+            usuario="atleta",
+            email="atleta@exemplo.com",
+            nome="Ana",
+            sobrenome="Silva",
+            e_socio=False,
+            password="senha-segura",
+        )
+        self.modalidade = ModalidadeEsportiva.objects.create(nome="Vôlei")
+        self.url = reverse("treinos")
+        self.client.force_login(self.usuario)
+
+    def criar_treino(self, nome, dias, **extra):
+        dados = {
+            "criador": self.usuario,
+            "modalidade": self.modalidade,
+            "nome": nome,
+            "local": "Ginásio",
+            "data_hora": timezone.now() + timedelta(days=dias),
+            "duracao": 60,
+        }
+        dados.update(extra)
+        return Treino.objects.create(**dados)
+
+    def test_exige_login(self):
+        self.client.logout()
+
+        response = self.client.get(self.url)
+
+        self.assertRedirects(response, f'{reverse("login")}?next={self.url}')
+
+    def test_lista_treinos_disponiveis_por_data(self):
+        depois = self.criar_treino("Treino depois", 5)
+        antes = self.criar_treino("Treino antes", 1)
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(list(response.context["treinos"]), [antes, depois])
+        self.assertContains(response, "2 treinos disponíveis")
+
+    def test_treino_encerrado_fica_separado(self):
+        futuro = self.criar_treino("Treino futuro", 1)
+        encerrado_antigo = self.criar_treino("Treino antigo", -5)
+        encerrado_recente = self.criar_treino("Treino recente", -1)
+
+        response = self.client.get(self.url)
+
+        self.assertEqual(list(response.context["treinos"]), [futuro])
+        self.assertEqual(
+            list(response.context["treinos_encerrados"]),
+            [encerrado_recente, encerrado_antigo],
+        )
+        self.assertContains(response, "Encerrados")
+        self.assertContains(response, "training-card--encerrado", count=2)
+        self.assertContains(response, "1 treino disponível")
+
+    def test_mostra_selo_de_lotado(self):
+        treino = self.criar_treino("Treino cheio", 1, limite_participantes=1)
+        InscricaoTreino.objects.create(usuario=self.usuario, treino=treino)
+
+        response = self.client.get(self.url)
+
+        self.assertTrue(treino.lotado)
+        self.assertContains(response, "Lotado")
+
+    def test_card_mostra_dados_do_treino(self):
+        self.criar_treino(
+            "Treino de saque",
+            2,
+            limite_participantes=10,
+            custo=Decimal("15.50"),
+        )
+
+        response = self.client.get(self.url)
+
+        self.assertContains(response, "Treino de saque")
+        self.assertContains(response, "Vôlei")
+        self.assertContains(response, "Ginásio")
+        self.assertContains(response, "R$ 15,50")
+        self.assertContains(response, "0/10 participantes")
+        self.assertContains(response, "Ana")
+
+    def test_card_leva_para_o_detalhe_do_treino(self):
+        treino = self.criar_treino("Treino de saque", 2)
+
+        response = self.client.get(self.url)
+        detalhe = self.client.get(reverse("treino_detalhe", args=[treino.id]))
+
+        self.assertContains(
+            response,
+            f'href="{reverse("treino_detalhe", args=[treino.id])}"',
+        )
+        self.assertContains(detalhe, "Treino de saque")
+
+    def test_detalhe_de_treino_inexistente_retorna_404(self):
+        response = self.client.get(reverse("treino_detalhe", args=[999]))
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_mostra_mensagem_quando_nao_ha_treinos(self):
+        response = self.client.get(self.url)
+
+        self.assertContains(response, "Nenhum treino disponível no momento")
+        self.assertContains(response, "0 treinos disponíveis")
+        self.assertNotContains(response, "Encerrados")
+
+    def test_quantidade_de_queries_nao_cresce_com_os_treinos(self):
+        outro = get_user_model().objects.create_user(
+            usuario="outro",
+            email="outro@exemplo.com",
+            nome="Outro",
+            sobrenome="Teste",
+            e_socio=False,
+        )
+        for dia in range(1, 6):
+            treino = self.criar_treino(f"Treino {dia}", dia, limite_participantes=5)
+            InscricaoTreino.objects.create(usuario=self.usuario, treino=treino)
+            InscricaoTreino.objects.create(usuario=outro, treino=treino)
+
+        with self.assertNumQueries(5):
+            response = self.client.get(self.url)
+
+        self.assertEqual(response.status_code, 200)

@@ -2,25 +2,34 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import redirect_to_login
-from django.http import JsonResponse
-from django.shortcuts import render
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django.views.decorators.http import require_http_methods
 
 from apps.modalidades.models import ModalidadeEsportiva
 
+from .filters import treinos_disponiveis, treinos_encerrados
 from .forms import TreinoCreateForm
 from .models import Treino
 
 
 @login_required
 def treinos_view(request):
-    treinos = Treino.objects.order_by("data_hora") #ordenados pela data do treino
     return render(
         request,
         "treinos/lista_treinos.html",
-        {"treinos": treinos, "agora": timezone.now()}, #agora serve pro card saber se o treino ja passou
+        {
+            "treinos": treinos_disponiveis(),
+            "treinos_encerrados": treinos_encerrados(),
+        },
     )
+
+
+@login_required
+def treino_detalhe_view(request, treino_id):
+    treino = get_object_or_404(Treino, pk=treino_id)
+    return HttpResponse(treino.nome)
 
 
 def _render_create_workout(request, form, status=200, submitted=False):
