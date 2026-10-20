@@ -93,6 +93,11 @@
     background: var(--color-success-soft);
 }
 
+.training-card__status--indisponivel {
+    color: rgb(255 255 255 / 35%);
+    background: rgb(255 255 255 / 5%);
+}
+
 .training-card__cost {
     flex-shrink: 0;
 

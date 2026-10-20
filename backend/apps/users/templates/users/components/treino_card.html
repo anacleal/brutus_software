@@ -12,6 +12,17 @@
                 <span class="training-card__status">
                     Criado
                 </span>
+            {% elif card_type == "lista" %}
+                {# na lista so aparece selo quando o treino nao aceita mais inscricao #}
+                {% if training.data_hora < agora %}
+                    <span class="training-card__status training-card__status--indisponivel">
+                        Encerrado
+                    </span>
+                {% elif training.limite_participantes and training.inscricoes.count >= training.limite_participantes %}
+                    <span class="training-card__status training-card__status--indisponivel">
+                        Lotado
+                    </span>
+                {% endif %}
             {% else %}
                 <span class="training-card__status">
                     Inscrito

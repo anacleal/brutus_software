@@ -13,8 +13,12 @@ from .models import ModalidadeEsportiva, Treino
 
 @login_required
 def treinos_view(request):
-    treinos = Treino.objects.order_by("data_hora") #do mais proximo pro mais distante
-    return render(request, "treinos/lista_treinos.html", {"treinos": treinos})
+    treinos = Treino.objects.order_by("data_hora") #ordenados pela data do treino
+    return render(
+        request,
+        "treinos/lista_treinos.html",
+        {"treinos": treinos, "agora": timezone.now()}, #agora serve pro card saber se o treino ja passou
+    )
 
 
 def _render_create_workout(request, form, status=200, submitted=False):
