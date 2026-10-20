@@ -2,7 +2,7 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import redirect_to_login
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
 from django.views.decorators.http import require_http_methods
@@ -13,7 +13,8 @@ from .models import ModalidadeEsportiva, Treino
 
 @login_required
 def treinos_view(request):
-    return HttpResponse("Treinos")
+    treinos = Treino.objects.order_by("data_hora") #do mais proximo pro mais distante
+    return render(request, "treinos/lista_treinos.html", {"treinos": treinos})
 
 
 def _render_create_workout(request, form, status=200, submitted=False):
