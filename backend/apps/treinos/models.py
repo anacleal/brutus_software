@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
-from backend.apps.modalidades.models import ModalidadeEsportiva
 
 class Treino(models.Model):
     id = models.AutoField(primary_key=True)
@@ -12,7 +12,7 @@ class Treino(models.Model):
         related_name="treinos_criados",
     )
     modalidade = models.ForeignKey(
-        ModalidadeEsportiva,
+        'modalidades.ModalidadeEsportiva',
         db_column="modalidade_id",
         on_delete=models.PROTECT,
         related_name="treinos",
@@ -36,3 +36,47 @@ class Treino(models.Model):
 
     def __str__(self):
         return self.nome
+
+    @property
+    def encerrado(self):
+        return self.data_hora <= timezone.now()
+
+    @property
+    def lotado(self):
+        if self.limite_participantes is None:
+            return False
+        return self.inscricoes.count() >= self.limite_participantes
+
+
+class InscricaoTreino(models.Model):
+    usuario = models.ForeignKey(
+        'users.Usuario',
+        on_delete=models.CASCADE,
+        related_name='inscricoes_treino'
+    )
+
+    treino = models.ForeignKey(
+        Treino,
+        on_delete=models.CASCADE,
+        related_name='inscricoes'
+    )
+
+    presenca = models.BooleanField(default=False)
+
+    created_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        db_table = 'inscricao_treino'
+
+        constraints = [
+            models.UniqueConstraint(
+                fields=['usuario', 'treino'],
+                name='usuario_treino_unico'
+            )
+        ]
+
+    def __str__(self):
+        return f'{self.usuario} - {self.treino}'
+

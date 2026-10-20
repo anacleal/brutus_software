@@ -7,8 +7,10 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.views.decorators.http import require_http_methods
 
+from apps.modalidades.models import ModalidadeEsportiva
+
 from .forms import TreinoCreateForm
-from .models import ModalidadeEsportiva, Treino
+from .models import Treino
 
 
 @login_required

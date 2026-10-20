@@ -6,18 +6,28 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.utils import timezone
 
-from .models import ModalidadeEsportiva, Treino
+from apps.modalidades.models import ModalidadeEsportiva
+
+from .models import Treino
 
 
 class CriarTreinoEndpointTests(TestCase):
     def setUp(self):
         user_model = get_user_model()
         self.criador = user_model.objects.create_user(
-            username="criador",
+            usuario="criador",
+            email="criador@exemplo.com",
+            nome="Criador",
+            sobrenome="Teste",
+            e_socio=False,
             password="senha-segura",
         )
         self.outro_usuario = user_model.objects.create_user(
-            username="outro",
+            usuario="outro",
+            email="outro@exemplo.com",
+            nome="Outro",
+            sobrenome="Teste",
+            e_socio=False,
             password="senha-segura",
         )
         self.modalidade = ModalidadeEsportiva.objects.create(nome="Futebol")
