@@ -1,5 +1,4 @@
 from django.http import HttpResponse, JsonResponse
-from datetime import datetime
 
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -7,6 +6,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django import forms
+from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 from django.views.decorators.cache import never_cache
@@ -43,7 +43,36 @@ def cadastro_view(request):
 
 @login_required
 def perfil_view(request):
-    return HttpResponse("Perfil")
+    if request.method == "POST":
+        form = UsuarioPerfilForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect("perfil")
+    else:
+        form = UsuarioPerfilForm(instance=request.user)
+
+    treinos_criados = request.user.treinos_criados.all()
+
+    treinos_participados = Treino.objects.filter(
+        inscricoes__usuario=request.user,
+        inscricoes__presenca=True,
+    )
+    proximos_treinos = Treino.objects.filter(
+        inscricoes__usuario=request.user,
+        data_hora__gte=timezone.now(),
+    )
+
+    return render(
+        request,
+        "users/perfil.html",
+        {
+            "profile_user": request.user,
+            "form": form,
+            "created_trainings": treinos_criados,
+            "participated_trainings": treinos_participados,
+            "upcoming_trainings": proximos_treinos,
+        },
+    )
 
 
 #redefinir senha
@@ -108,33 +137,3 @@ def confirmar_reset_senha_view(request):
         return JsonResponse({'detail': ' '.join(erro.mensagens)}, status=400) #regras de senha do Django (tamanho, muito comum...)
  
     return JsonResponse({'detail': 'Senha alterada com sucesso! Você já pode entrar com a nova senha.'})
-    if request.method == "POST":
-        form = UsuarioPerfilForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            return redirect("perfil")
-    else:
-        form = UsuarioPerfilForm(instance=request.user)
-
-    treinos_criados = request.user.treinos_criados.all()
-
-    treinos_participados = Treino.objects.filter(
-        inscricoes__usuario=request.user,
-        inscricoes__presenca=True,
-    )
-    proximos_treinos = Treino.objects.filter(
-        inscricoes__usuario=request.user,
-        data_hora__gte=datetime.now(),
-    )
-
-    return render(
-        request,
-        "users/perfil.html",
-        {
-            "profile_user": request.user,
-            "form": form,
-            "created_trainings": treinos_criados,
-            "participated_trainings": treinos_participados,
-            "upcoming_trainings": proximos_treinos,
-        },
-    )
