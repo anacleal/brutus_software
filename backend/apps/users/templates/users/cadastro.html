@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brutus - Criar conta</title>
+  <link rel="stylesheet" href="{% static 'users/css/cadastro.css' %}" />
+</head>
+<body>
+  <main class="container">
+    <header class="brand">
+      <div class="brand-logo">B</div>
+      <div>
+        <div class="brand-name">Brutus</div>
+        <div class="brand-sub">Atlética Universitária</div>
+      </div>
+    </header>
+
+    <h1>Criar sua conta</h1>
+    <p class="subtitle">Junte-se à plataforma e comece a treinar.</p>
+
+    <form id="signup-form" method="post" action="{% url 'cadastro' %}" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div class="avatar-row">
+        <div class="avatar">
+          <label class="avatar-circle" id="avatar-circle" for="foto" aria-label="Escolher foto de perfil">
+            <img id="avatar-preview" alt="Prévia da foto de perfil" />
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </label>
+          <label class="avatar-badge" for="foto" aria-hidden="true">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </label>
+          <input type="file" id="foto" name="foto" accept=".jpg,.jpeg,.png,.webp" />
+        </div>
+        <div>
+          <div class="avatar-label">Foto de perfil</div>
+          <div class="avatar-hint">Opcional (JPG, PNG ou WebP; até 5 MB)</div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="nome">Nome</label>
+          <input class="input" type="text" id="nome" name="nome" value="{{ valores.nome|default:'' }}" placeholder="Lucas" autocomplete="given-name" maxlength="100" required />
+        </div>
+        <div class="field">
+          <label for="sobrenome">Sobrenome</label>
+          <input class="input" type="text" id="sobrenome" name="sobrenome" value="{{ valores.sobrenome|default:'' }}" placeholder="Ferreira" autocomplete="family-name" maxlength="100" required />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="email">E-mail</label>
+        <input class="input" type="email" id="email" name="email" value="{{ valores.email|default:'' }}" placeholder="seu@email.edu.br" autocomplete="email" maxlength="255" required />
+      </div>
+
+      <div class="field">
+        <label for="usuario">Nome de usuário</label>
+        <div class="input-prefix">
+          <span>@</span>
+          <input class="input" type="text" id="usuario" name="usuario" value="{{ valores.usuario|default:'' }}" placeholder="lucas.ferreira" autocomplete="username" maxlength="100" required />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="senha">Senha</label>
+          <input class="input" type="password" id="senha" name="senha" placeholder="••••••••" minlength="8" autocomplete="new-password" required />
+        </div>
+        <div class="field">
+          <label for="confirmacao_senha">Confirmar</label>
+          <input class="input" type="password" id="confirmacao_senha" name="confirmacao_senha" placeholder="••••••••" minlength="8" autocomplete="new-password" required />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Modalidade preferida</label>
+        <div class="chips" id="chips">
+          {% for modalidade in modalidades %}
+            <button
+              type="button"
+              class="chip{% if modalidade.pk|stringformat:'s' == modalidade_selecionada %} active{% endif %}"
+              data-id="{{ modalidade.pk }}"
+            >{{ modalidade.nome }}</button>
+          {% empty %}
+            <p>Não há modalidades disponíveis no momento.</p>
+          {% endfor %}
+        </div>
+        <input type="hidden" id="modalidade_preferida" name="modalidade_preferida" value="{{ modalidade_selecionada|default:'' }}" />
+      </div>
+
+      {% if erros %}
+        <div class="alert error show" role="alert">
+          <strong>Confira os dados:</strong>
+          <ul>
+            {% for erro in erros %}
+              <li>{{ erro }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+      <div class="alert error" id="form-error" role="alert"></div>
+
+      <button type="submit" class="btn" id="submit-btn">Criar conta</button>
+    </form>
+
+    <div class="footer">
+      Já tem uma conta? <a href="{% url 'login' %}">Entrar</a>
+    </div>
+  </main>
+
+  <script>
+    const errorBox = document.getElementById("form-error");
+    const foto = document.getElementById("foto");
+    const preview = document.getElementById("avatar-preview");
+    const circle = document.getElementById("avatar-circle");
+    const modalidadeInput = document.getElementById("modalidade_preferida");
+    let previewUrl = null;
+
+    foto.addEventListener("change", () => {
+      const file = foto.files[0];
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      previewUrl = null;
+      errorBox.classList.remove("show");
+
+      if (!file) {
+        preview.removeAttribute("src");
+        circle.classList.remove("has-image");
+        return;
+      }
+
+      const extensao = file.name.split(".").pop().toLowerCase();
+      if (!["jpg", "jpeg", "png", "webp"].includes(extensao)) {
+        foto.value = "";
+        errorBox.textContent = "Use uma foto JPG, JPEG, PNG ou WebP.";
+        errorBox.classList.add("show");
+        circle.classList.remove("has-image");
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        foto.value = "";
+        errorBox.textContent = "A foto deve ter no máximo 5 MB.";
+        errorBox.classList.add("show");
+        circle.classList.remove("has-image");
+        return;
+      }
+
+      previewUrl = URL.createObjectURL(file);
+      preview.src = previewUrl;
+      circle.classList.add("has-image");
+    });
+
+    document.querySelectorAll(".chip").forEach((chip) =>
+      chip.addEventListener("click", () => {
+        document.querySelectorAll(".chip").forEach((item) =>
+          item.classList.remove("active")
+        );
+        chip.classList.add("active");
+        modalidadeInput.value = chip.dataset.id;
+      })
+    );
+  </script>
+</body>
+</html>
