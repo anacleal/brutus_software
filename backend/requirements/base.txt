@@ -1,1 +1,0 @@
-Django==6.1.1 #informa a versao do django
