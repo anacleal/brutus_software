@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %} {# libera o {% static %} pra montar o caminho do css #}
+
+{% block title %}Entrar - Brutus{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="{% static 'users/css/login.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="marca">
+    <div class="marca__selo">B</div>
+    <div>
+        <div class="marca__nome">Brutus</div>
+        <div class="marca__lema">Atlética Universitária</div>
+    </div>
+</div>
+
+<h1>Bem-vindo de volta 👋</h1>
+<p>Entre com seu e-mail e senha para acessar a plataforma.</p>
+
+{% if form.errors %}
+<p>Usuário ou senha inválidos.</p>
+{% endif %}
+
+<form method="post">
+    {% csrf_token %}
+
+    <label for="username">Usuário ou e-mail</label>
+    <input type="text" name="username" id="username" placeholder="seu@email.edu.br" required autofocus>
+
+    <div class="senha-linha">
+        <label for="password">Senha</label>
+        <a href="#" class="esqueci">Esqueci minha senha</a>
+    </div>
+    <input type="password" name="password" id="password" placeholder="••••••••" required>
+
+    <button type="submit">Entrar</button>
+</form>
+
+<script>
+    document.querySelectorAll('form [required]').forEach((campo) => {
+        campo.addEventListener('invalid', () => {
+            campo.setCustomValidity('Por favor, preencha este campo.');
+        });
+        campo.addEventListener('input', () => {
+            campo.setCustomValidity('');
+        });
+    });
+</script>
+
+<div class="rodape">
+    Não tem uma conta? <a href="{% url 'cadastro' %}">Criar conta</a>
+</div>
+{% endblock %}
