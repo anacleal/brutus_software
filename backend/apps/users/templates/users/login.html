@@ -26,13 +26,14 @@
 
 <form method="post">
     {% csrf_token %}
+    <input type="hidden" name="next" value="{{ request.GET.next }}">
 
     <label for="username">Usuário ou e-mail</label>
     <input type="text" name="username" id="username" placeholder="seu@email.edu.br" required autofocus>
 
     <div class="senha-linha">
         <label for="password">Senha</label>
-        <a href="#" class="esqueci">Esqueci minha senha</a>
+        <a href="{% url 'esqueci-senha' %}" class="esqueci">Esqueci minha senha</a>
     </div>
     <input type="password" name="password" id="password" placeholder="••••••••" required>
 

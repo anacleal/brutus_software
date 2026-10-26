@@ -1,54 +1,41 @@
+from django.conf import settings
 from django.db import models
 
+from apps.modalidades.models import ModalidadeEsportiva
 
 class Treino(models.Model):
-    id = models.BigAutoField(primary_key=True)
-
+    id = models.AutoField(primary_key=True)
     criador = models.ForeignKey(
         'users.Usuario',
-        on_delete=models.CASCADE,
-        related_name='treinos_criados'
+        db_column="criador",
+        on_delete=models.PROTECT,
+        related_name="treinos_criados",
     )
-
     modalidade = models.ForeignKey(
-        'modalidades.ModalidadeEsportiva',
-        on_delete=models.CASCADE,
-        related_name='treinos'
+        ModalidadeEsportiva,
+        db_column="modalidade_id",
+        on_delete=models.PROTECT,
+        related_name="treinos",
     )
-
-    fechado = models.BooleanField(default=False)
-
-    limite_participantes = models.IntegerField(
-        null=True,
-        blank=True
-    )
-
+    nome = models.CharField(max_length=100)
+    limite_participantes = models.IntegerField(blank=True, null=True)
     local = models.CharField(max_length=100)
-
     data_hora = models.DateTimeField()
-
     duracao = models.IntegerField()
-
-    custo = models.IntegerField(
+    custo = models.DecimalField(
+        max_digits=8,
+        decimal_places=2,
+        blank=True,
         null=True,
-        blank=True
     )
-
-    observacoes = models.TextField(
-        null=True,
-        blank=True
-    )
-
-    created_at = models.DateTimeField(
-        auto_now_add=True
-    )
-
-    def __str__(self):
-        return f'{self.modalidade} - {self.local} - {self.data_hora}'
+    observacoes = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        db_table = 'treinos'
-        ordering = ['data_hora']
+        db_table = "treinos"
+
+    def __str__(self):
+        return self.nome
 
 
 class InscricaoTreino(models.Model):
