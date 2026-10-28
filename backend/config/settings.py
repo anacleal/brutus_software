@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'apps.users', #adicionando aqui pra reconhecer
     'apps.core',
     'apps.treinos',
-    'apps.modalidades'
+    'apps.modalidades',
+    'apps.notificacoes',
 ]
 
 AUTH_USER_MODEL = 'users.Usuario' # Usar o usuário customizado definido no models.py do app users

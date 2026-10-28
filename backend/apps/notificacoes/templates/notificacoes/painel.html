@@ -1,0 +1,40 @@
+{% load static notificacoes_tags %}{% if autenticado %}
+<link rel="stylesheet" href="{% static 'notificacoes/css/notificacoes.css' %}">
+{# Painel flutuante: nasce fechado (hidden) e é aberto pelo sino, que tem o atributo data-notificacoes-toggle #}
+<section class="notificacoes" id="notificacoes-painel" role="dialog" aria-labelledby="titulo-notificacoes" tabindex="-1" hidden>
+    <header class="notificacoes__cabecalho">
+        <h2 class="notificacoes__heading" id="titulo-notificacoes">
+            <svg class="notificacoes__icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+            </svg>
+            Notificações
+            {% if nao_lidas %}<span class="notificacoes__contador" title="{{ nao_lidas }} não lida{{ nao_lidas|pluralize }}">{{ nao_lidas }}</span>{% endif %}
+        </h2>
+
+        {% if nao_lidas %}
+        <form method="post" action="{% url 'notificacoes-marcar-lidas' %}" data-notificacoes-marcar-lidas>
+            {% csrf_token %}
+            <button type="submit" class="notificacoes__acao">Marcar todas como lidas</button>
+        </form>
+        {% endif %}
+    </header>
+
+    {% if notificacoes %}
+    <ul class="notificacoes__lista">
+        {% for n in notificacoes %}
+        <li class="notificacao{% if not n.lida %} notificacao--nova{% endif %}">
+            <div class="notificacao__titulo">
+                {% if n.url %}<a href="{{ n.url }}">{{ n.titulo }}</a>{% else %}{{ n.titulo }}{% endif %}
+            </div>
+            {% if n.mensagem %}<p class="notificacao__mensagem">{{ n.mensagem }}</p>{% endif %}
+            <time class="notificacao__data" datetime="{{ n.criada_em|date:'c' }}">{{ n.criada_em|tempo_atras }}</time>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="notificacoes__vazio">Você não tem notificações no momento.</p>
+    {% endif %}
+</section>
+<script src="{% static 'notificacoes/js/notificacoes.js' %}" defer></script>
+{% endif %}
