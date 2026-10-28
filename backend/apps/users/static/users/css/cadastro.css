@@ -85,6 +85,10 @@ form { display: flex; flex-direction: column; gap: 17px; }
 }
 .input::placeholder { color: var(--placeholder); }
 .input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(192, 57, 43, .18); }
+.input.has-error { border-color: rgba(192, 57, 43, .5); }
+
+.field-error { color: #e05a4a; font-size: 12px; margin-top: 4px; }
+.field-error:empty { display: none; }
 
 .input-prefix { position: relative; }
 .input-prefix span {

@@ -20,7 +20,7 @@
     <h1>Criar sua conta</h1>
     <p class="subtitle">Junte-se à plataforma e comece a treinar.</p>
 
-    <form id="signup-form" method="post" action="{% url 'cadastro' %}" enctype="multipart/form-data">
+    <form id="signup-form" method="post" action="{% url 'cadastro' %}" enctype="multipart/form-data" novalidate>
       {% csrf_token %}
       <div class="avatar-row">
         <div class="avatar">
@@ -43,16 +43,19 @@
         <div class="field">
           <label for="nome">Nome</label>
           <input class="input" type="text" id="nome" name="nome" value="{{ valores.nome|default:'' }}" placeholder="Lucas" autocomplete="given-name" maxlength="100" required />
+          <p class="field-error" id="erro-nome"></p>
         </div>
         <div class="field">
           <label for="sobrenome">Sobrenome</label>
           <input class="input" type="text" id="sobrenome" name="sobrenome" value="{{ valores.sobrenome|default:'' }}" placeholder="Ferreira" autocomplete="family-name" maxlength="100" required />
+          <p class="field-error" id="erro-sobrenome"></p>
         </div>
       </div>
 
       <div class="field">
         <label for="email">E-mail</label>
         <input class="input" type="email" id="email" name="email" value="{{ valores.email|default:'' }}" placeholder="seu@email.edu.br" autocomplete="email" maxlength="255" required />
+        <p class="field-error" id="erro-email"></p>
       </div>
 
       <div class="field">
@@ -61,16 +64,19 @@
           <span>@</span>
           <input class="input" type="text" id="usuario" name="usuario" value="{{ valores.usuario|default:'' }}" placeholder="lucas.ferreira" autocomplete="username" maxlength="100" required />
         </div>
+        <p class="field-error" id="erro-usuario"></p>
       </div>
 
       <div class="row">
         <div class="field">
           <label for="senha">Senha</label>
           <input class="input" type="password" id="senha" name="senha" placeholder="••••••••" minlength="8" autocomplete="new-password" required />
+          <p class="field-error" id="erro-senha"></p>
         </div>
         <div class="field">
           <label for="confirmacao_senha">Confirmar</label>
           <input class="input" type="password" id="confirmacao_senha" name="confirmacao_senha" placeholder="••••••••" minlength="8" autocomplete="new-password" required />
+          <p class="field-error" id="erro-confirmacao_senha"></p>
         </div>
       </div>
 
@@ -87,6 +93,7 @@
             <p>Não há modalidades disponíveis no momento.</p>
           {% endfor %}
         </div>
+        <p class="field-error" id="erro-modalidade_preferida"></p>
         <input type="hidden" id="modalidade_preferida" name="modalidade_preferida" value="{{ modalidade_selecionada|default:'' }}" />
       </div>
 
@@ -159,8 +166,68 @@
         );
         chip.classList.add("active");
         modalidadeInput.value = chip.dataset.id;
+        validarCampo("modalidade_preferida");
       })
     );
+
+    const form = document.getElementById("signup-form");
+    const valor = (id) => document.getElementById(id).value.trim();
+
+    const regras = {
+      nome: () => (valor("nome") ? "" : "Campo obrigatório"),
+      sobrenome: () => (valor("sobrenome") ? "" : "Campo obrigatório"),
+      email: () =>
+        /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(valor("email")) ? "" : "E-mail inválido",
+      usuario: () =>
+        valor("usuario").replace(/^@/, "").length >= 3 ? "" : "Mínimo 3 caracteres",
+      senha: () =>
+        document.getElementById("senha").value.length >= 8 ? "" : "Mínimo 8 caracteres",
+      confirmacao_senha: () =>
+        document.getElementById("confirmacao_senha").value ===
+        document.getElementById("senha").value
+          ? ""
+          : "Senhas não coincidem",
+      modalidade_preferida: () =>
+        modalidadeInput.value ? "" : "Selecione uma modalidade",
+    };
+
+    const tocados = new Set();
+
+    function validarCampo(id) {
+      const mensagem = regras[id]();
+      document.getElementById(`erro-${id}`).textContent = mensagem;
+      const campo = document.getElementById(id);
+      if (campo.type !== "hidden") {
+        campo.classList.toggle("has-error", mensagem !== "");
+      }
+      return mensagem === "";
+    }
+
+    ["nome", "sobrenome", "email", "usuario", "senha", "confirmacao_senha"].forEach((id) => {
+      const campo = document.getElementById(id);
+      campo.addEventListener("blur", () => {
+        tocados.add(id);
+        validarCampo(id);
+      });
+      campo.addEventListener("input", () => {
+        if (tocados.has(id)) validarCampo(id);
+        if (id === "senha" && tocados.has("confirmacao_senha")) {
+          validarCampo("confirmacao_senha");
+        }
+      });
+    });
+
+    form.addEventListener("submit", (event) => {
+      const invalidos = Object.keys(regras).filter((id) => !validarCampo(id));
+      Object.keys(regras).forEach((id) => tocados.add(id));
+      if (invalidos.length > 0) {
+        event.preventDefault();
+        const primeiro = invalidos[0];
+        if (primeiro !== "modalidade_preferida") {
+          document.getElementById(primeiro).focus();
+        }
+      }
+    });
   </script>
 </body>
 </html>
