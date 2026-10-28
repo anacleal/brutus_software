@@ -1,4 +1,5 @@
 from django.http import HttpResponse, JsonResponse
+import json
 from datetime import datetime
 from pathlib import Path
 from uuid import uuid4
@@ -54,10 +55,29 @@ def cadastro_view(request):
             {"modalidades": modalidades, "valores": valores},
         )
 
-    dados = request.POST.dict()
+    is_json = request.content_type == "application/json"
+    if is_json:
+        try:
+            dados = json.loads(request.body)
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            return JsonResponse(
+                {"errors": ["O corpo da requisição deve conter um JSON válido."]},
+                status=400,
+            )
+        if not isinstance(dados, dict):
+            return JsonResponse(
+                {"errors": ["O corpo da requisição deve ser um objeto JSON."]},
+                status=400,
+            )
+    else:
+        dados = request.POST.dict()
+
+    is_form_submission = not is_json and dados.get("_form_submission") == "1"
     for campo in ("nome", "sobrenome", "email", "usuario"):
-        dados[campo] = dados.get(campo, "").strip()
-    dados["usuario"] = dados["usuario"].removeprefix("@")
+        valor = dados.get(campo, "")
+        dados[campo] = valor.strip() if isinstance(valor, str) else valor
+    if isinstance(dados["usuario"], str):
+        dados["usuario"] = dados["usuario"].removeprefix("@")
 
     erros = validar_dados_cadastro(dados)
     modalidade = None
@@ -69,11 +89,16 @@ def cadastro_view(request):
             erros.append("A modalidade selecionada não existe.")
 
     Usuario = get_user_model()
-    email = Usuario.objects.normalize_email(dados.get("email", ""))
+    email = (
+        Usuario.objects.normalize_email(dados["email"])
+        if isinstance(dados["email"], str)
+        else ""
+    )
     if email and Usuario.objects.filter(email__iexact=email).exists():
         erros.append("Este e-mail já está cadastrado.")
-    if dados.get("usuario") and Usuario.objects.filter(
-        usuario__iexact=dados["usuario"]
+    usuario_informado = dados["usuario"] if isinstance(dados["usuario"], str) else ""
+    if usuario_informado and Usuario.objects.filter(
+        usuario__iexact=usuario_informado
     ).exists():
         erros.append("Este nome de usuário já está em uso.")
 
@@ -92,6 +117,8 @@ def cadastro_view(request):
             erros.append("Use uma foto JPG, JPEG, PNG ou WebP.")
 
     if erros:
+        if not is_form_submission:
+            return JsonResponse({"errors": erros}, status=400)
         return render(
             request,
             "users/cadastro.html",
@@ -132,7 +159,24 @@ def cadastro_view(request):
             default_storage.delete(foto_path)
         raise
 
-    return redirect("login")
+    if is_form_submission:
+        return redirect("login")
+
+    return JsonResponse(
+        {
+            "message": "Usuário criado com sucesso.",
+            "usuario": {
+                "id": usuario.id,
+                "nome": usuario.nome,
+                "sobrenome": usuario.sobrenome,
+                "email": usuario.email,
+                "usuario": usuario.usuario,
+                "modalidade_preferida": modalidade.id,
+                "foto_perfil": usuario.foto_perfil,
+            },
+        },
+        status=201,
+    )
 
 
 @login_required

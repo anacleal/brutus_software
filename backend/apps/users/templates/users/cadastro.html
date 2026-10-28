@@ -22,6 +22,7 @@
 
     <form id="signup-form" method="post" action="{% url 'cadastro' %}" enctype="multipart/form-data" novalidate>
       {% csrf_token %}
+      <input type="hidden" name="_form_submission" value="1" />
       <div class="avatar-row">
         <div class="avatar">
           <label class="avatar-circle" id="avatar-circle" for="foto" aria-label="Escolher foto de perfil">
