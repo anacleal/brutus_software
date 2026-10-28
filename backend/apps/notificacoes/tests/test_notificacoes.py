@@ -1,9 +1,14 @@
+from datetime import timedelta
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.template import RequestContext, Template
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 from django.utils import timezone
+
+from apps.modalidades.models import ModalidadeEsportiva
+from apps.treinos.models import InscricaoTreino, Treino
 
 from .. import services
 from ..models import Notificacao
@@ -235,6 +240,51 @@ class ListarNotificacoesViewTests(BaseNotificacoes):
     def test_post_nao_permitido(self):
         self.client.force_login(self.ana)
         self.assertEqual(self.client.post(self.url).status_code, 405)
+
+
+class NovoParticipanteTests(BaseNotificacoes):
+    def setUp(self):
+        super().setUp()
+        self.treino = Treino.objects.create(
+            criador=self.ana,
+            modalidade=ModalidadeEsportiva.objects.get_or_create(nome="Futebol")[0],
+            nome="Futebol de sábado",
+            local="Quadra 2",
+            data_hora=timezone.now() + timedelta(days=1),
+            duracao=60,
+        )
+
+    def inscrever(self, usuario):
+        return InscricaoTreino.objects.create(usuario=usuario, treino=self.treino)
+
+    def test_inscricao_notifica_o_criador_do_treino(self):
+        self.inscrever(self.bia)
+
+        notificacoes = services.listar_todas(self.ana)
+        self.assertEqual(len(notificacoes), 1)
+        self.assertEqual(notificacoes[0].titulo, "Novo participante no seu treino")
+        self.assertEqual(notificacoes[0].mensagem, "bia se inscreveu em Futebol de sábado")
+        self.assertEqual(notificacoes[0].url, reverse("treinos"))
+        self.assertEqual(services.listar_todas(self.bia), [])
+
+    def test_criador_se_inscrevendo_nao_se_notifica(self):
+        self.inscrever(self.ana)
+        self.assertEqual(services.listar_todas(self.ana), [])
+
+    def test_salvar_inscricao_de_novo_nao_duplica(self):
+        inscricao = self.inscrever(self.bia)
+        inscricao.presenca = True
+        inscricao.save()
+        self.assertEqual(len(services.listar_todas(self.ana)), 1)
+
+    def test_aparece_no_endpoint_do_criador(self):
+        self.inscrever(self.bia)
+        self.client.force_login(self.ana)
+
+        dados = self.client.get(reverse("notificacoes")).json()
+
+        self.assertEqual(dados["nao_lidas"], 1)
+        self.assertEqual(dados["notificacoes"][0]["titulo"], "Novo participante no seu treino")
 
 
 class TelaInicialTests(BaseNotificacoes):

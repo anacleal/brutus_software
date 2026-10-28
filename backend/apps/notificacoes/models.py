@@ -1,5 +1,8 @@
 from django.conf import settings
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.urls import reverse
 
 
 class Notificacao(models.Model):
@@ -33,3 +36,16 @@ class Notificacao(models.Model):
 
     def __str__(self):
         return f"{self.titulo} (usuário {self.usuario_id})"
+
+
+@receiver(post_save, sender="treinos.InscricaoTreino")
+def notificar_novo_participante(sender, instance, created, **kwargs):
+    treino = instance.treino
+    if not created or treino.criador_id == instance.usuario_id:
+        return
+    Notificacao.objects.create(
+        usuario=treino.criador,
+        titulo="Novo participante no seu treino",
+        mensagem=f"{instance.usuario.nome} se inscreveu em {treino.nome}"[:255],
+        url=reverse("treinos"),
+    )
