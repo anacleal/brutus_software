@@ -28,7 +28,7 @@ class CriarTreinoEndpointTests(TestCase):
             e_socio=False,
             password="senha-segura",
         )
-        self.modalidade = ModalidadeEsportiva.objects.create(nome="Futebol")
+        self.modalidade = ModalidadeEsportiva.objects.get_or_create(nome="Futebol")[0]
         self.client.force_login(self.criador)
         self.url = "/treinos/criar/"
         self.dados = {
