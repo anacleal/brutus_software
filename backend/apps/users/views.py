@@ -20,7 +20,7 @@ from apps.treinos.models import Treino
 
 from .forms import UsuarioPerfilForm
 from .services import SenhaInvalidaError, TokenInvalidoError, redefinir_senha, solicitar_reset_senha, token_esta_valido
-from .validators import validar_dados_cadastro
+from .validators import foto_e_imagem_valida, validar_dados_cadastro
 
 
 def login_view(request):
@@ -88,6 +88,8 @@ def cadastro_view(request):
             erros.append("O arquivo da foto está vazio.")
         elif foto.size > 5 * 1024 * 1024:
             erros.append("A foto deve ter no máximo 5 MB.")
+        elif not foto_e_imagem_valida(foto):
+            erros.append("Use uma foto JPG, JPEG, PNG ou WebP.")
 
     if erros:
         return render(
