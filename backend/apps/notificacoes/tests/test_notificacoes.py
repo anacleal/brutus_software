@@ -12,7 +12,12 @@ from ..templatetags.notificacoes_tags import tempo_atras
 
 def criar_usuario(nome):
     return get_user_model().objects.create_user(
-        username=nome, email=f"{nome}@exemplo.com", password="Senha#12345"
+        usuario=nome,
+        email=f"{nome}@exemplo.com",
+        nome=nome,
+        sobrenome="Teste",
+        e_socio=False,
+        password="Senha#12345",
     )
 
 
