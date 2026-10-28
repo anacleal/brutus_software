@@ -87,3 +87,13 @@ def validar_dados_cadastro(dados: Mapping[str, Any]) -> list[str]:
         )
 
     return erros
+
+
+def foto_e_imagem_valida(foto) -> bool:
+    inicio = foto.read(12)
+    foto.seek(0)
+    return (
+        inicio.startswith(b"\xff\xd8\xff")
+        or inicio.startswith(b"\x89PNG")
+        or (inicio.startswith(b"RIFF") and inicio[8:12] == b"WEBP")
+    )
