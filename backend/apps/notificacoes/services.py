@@ -28,6 +28,10 @@ def listar_recentes(usuario, limite: int = 5) -> list[Notificacao]:
     return list(Notificacao.objects.filter(usuario=usuario)[:limite])
 
 
+def listar_todas(usuario) -> list[Notificacao]:
+    return list(Notificacao.objects.filter(usuario=usuario))
+
+
 def contar_nao_lidas(usuario) -> int:
     return Notificacao.objects.filter(usuario=usuario, lida_em__isnull=True).count()
 

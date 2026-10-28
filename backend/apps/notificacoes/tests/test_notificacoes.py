@@ -189,6 +189,54 @@ class MarcarLidasViewTests(BaseNotificacoes):
         self.assertEqual(self.client.get(self.url).status_code, 405)
 
 
+class ListarNotificacoesViewTests(BaseNotificacoes):
+    def setUp(self):
+        super().setUp()
+        self.url = reverse("notificacoes")
+
+    def test_exige_login(self):
+        resp = self.client.get(self.url)
+        self.assertEqual(resp.status_code, 401)
+
+    def test_retorna_so_as_do_usuario_logado_do_mais_novo(self):
+        services.criar_notificacao(self.ana, "a1", "Quadra 2", url="/treinos/")
+        services.criar_notificacao(self.ana, "a2")
+        services.criar_notificacao(self.bia, "b1")
+        self.client.force_login(self.ana)
+
+        resp = self.client.get(self.url)
+
+        self.assertEqual(resp.status_code, 200)
+        dados = resp.json()
+        self.assertEqual([n["titulo"] for n in dados["notificacoes"]], ["a2", "a1"])
+        self.assertEqual(dados["notificacoes"][1]["mensagem"], "Quadra 2")
+        self.assertEqual(dados["notificacoes"][1]["url"], "/treinos/")
+        self.assertFalse(dados["notificacoes"][1]["lida"])
+        self.assertEqual(dados["nao_lidas"], 2)
+
+    def test_sem_notificacoes_retorna_lista_vazia(self):
+        self.client.force_login(self.ana)
+
+        resp = self.client.get(self.url)
+
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.json(), {"nao_lidas": 0, "notificacoes": []})
+
+    def test_lidas_aparecem_mas_nao_contam(self):
+        services.criar_notificacao(self.ana, "a1")
+        services.marcar_todas_como_lidas(self.ana)
+        self.client.force_login(self.ana)
+
+        dados = self.client.get(self.url).json()
+
+        self.assertEqual(dados["nao_lidas"], 0)
+        self.assertTrue(dados["notificacoes"][0]["lida"])
+
+    def test_post_nao_permitido(self):
+        self.client.force_login(self.ana)
+        self.assertEqual(self.client.post(self.url).status_code, 405)
+
+
 class TelaInicialTests(BaseNotificacoes):
     def test_tela_inicial_tem_a_area_de_notificacoes(self):  # critério 1
         # Este teste só passa depois que você incluir {% painel_notificacoes %}
