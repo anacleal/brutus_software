@@ -13,7 +13,7 @@ class SolicitarResetSenhaTests(TestCase):
         self.url = reverse("senha-esqueci")
         # Ajuste a criação conforme o seu modelo `usuarios`
         self.usuario = get_user_model().objects.create_user(
-            email="ana@exemplo.com", username="ana", first_name="Ana", last_name="S"
+            usuario="ana", email="ana@exemplo.com", nome="Ana", sobrenome="S", e_socio=False
         )
 
     def test_email_existente_gera_token_vinculado(self):

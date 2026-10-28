@@ -73,10 +73,15 @@ lotado/gratuito/inscrito), US-22 a US-24 (tela de detalhes, vagas,
 participantes confirmados) e US-27 a US-30 (formulário de criação, treino
 gratuito/pago, validação de erros, cancelamento da criação).
 
-- `models.py` — modelo `Treino` (nome, modalidade FK, data, horário, local,
-  valor, limite de participantes, descrição, criador FK para `users`).
-- `views.py` — listagem com filtros/busca, detalhe do treino, criação,
-  recomendações baseadas na modalidade preferida do usuário.
+- `models.py` — modelos `Treino` e `ModalidadeEsportiva`, correspondentes às
+  tabelas `treinos` e `modalidades_esportivas` definidas em
+  `supabase/migrations/migrations.sql`.
+- `views.py` — a rota `/treinos/criar/` exibe o formulário em GET e recebe
+  envios em POST. A criação associa `criador` ao usuário autenticado, valida
+  nome, modalidade, local, data futura, duração, vagas e valor, e persiste o
+  treino. O POST também aceita JSON para integração com clientes de API.
+- `templates/treinos/criar_treino.html` — formulário responsivo para criação
+  de treinos, com mensagens de validação e retorno à tela inicial.
 - `filters.py` — lógica de filtro (modalidade, data, faixa de preço,
   disponibilidade de vagas).
 - `serializers.py` (se API) — inclui campos calculados como "vagas
