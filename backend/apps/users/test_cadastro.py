@@ -76,7 +76,7 @@ class CadastroViewTests(TestCase):
     def test_optional_profile_photo_is_saved_to_media_storage(self):
         foto = SimpleUploadedFile(
             "perfil.jpg",
-            b"conteudo da foto",
+            b"\xff\xd8\xff\xe0conteudo da foto",
             content_type="image/jpeg",
         )
         dados = self.dados | {"foto": foto}
