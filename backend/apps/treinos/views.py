@@ -2,9 +2,10 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import redirect_to_login
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
+from django.db.models import Count, F, Q, BooleanField, Case, When, Value
 from django.views.decorators.http import require_http_methods
 
 from .forms import TreinoCreateForm
@@ -13,7 +14,44 @@ from .models import ModalidadeEsportiva, Treino
 
 @login_required
 def treinos_view(request):
-    return HttpResponse("Treinos")
+    treinos = (
+        Treino.objects
+        .filter(data_hora__gt=timezone.now())
+        .select_related("modalidade", "criador")
+        .annotate(
+            total_participantes=Count("inscricoes", distinct=True),
+            gratuito=Case(
+                When(
+                    Q(custo__isnull=True) | Q(custo=0),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField()
+            ),
+            tem_vagas=Case(
+                When(
+                    Q(limite_participantes__isnull=True) |
+                    Q(total_participantes__lt=F("limite_participantes")),
+                    then=Value(True)
+                ),
+                default=Value(False),
+                output_field=BooleanField()
+            )
+        )
+        .order_by("data_hora")
+        
+    )
+
+    modalidades = ModalidadeEsportiva.objects.filter(
+        treinos__in=treinos
+    ).distinct().order_by("nome")
+
+    context = {
+        "treinos": treinos,
+        "modalidades": modalidades,
+    }
+
+    return render(request, "treinos/treinos.html", context)
 
 
 def _render_create_workout(request, form, status=200, submitted=False):

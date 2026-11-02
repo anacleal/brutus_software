@@ -1,0 +1,218 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Treinos disponíveis | Brutus</title>
+
+    <link rel="stylesheet" href="{% static 'treinos/css/treinos.css' %}">
+</head>
+<body>
+
+    {% include 'header_nav.html' %}
+
+    <main class="treinos-container">
+
+        <section class="treinos-heading">
+            <h1>Treinos disponíveis</h1>
+            <p>{{ treinos.count }} treinos na plataforma</p>
+        </section>
+
+        <section class="treinos-filtros">
+
+            <div class="pesquisa-container">
+                <span class="pesquisa-icon">⌕</span>
+
+                <input
+                    type="text"
+                    id="pesquisa-treino"
+                    placeholder="Pesquisar treino, modalidade ou local..."
+                >
+            </div>
+
+            <div class="filtros-modalidades">
+
+                <button class="filtro-btn ativo" data-modalidade="todas">
+                    Todos
+                </button>
+
+                {% for modalidade in modalidades %}
+                    <button
+                        class="filtro-btn"
+                        data-modalidade="{{ modalidade.nome|lower }}"
+                    >
+                        {{ modalidade.nome }}
+                    </button>
+                {% endfor %}
+
+            </div>
+
+            <!-- Filtros adicionais -->
+            <div class="filtros-adicionais">
+
+                <div class="filtros-secundarios">
+                    <button class="filtro-btn" data-filtro="gratuito">
+                        Gratuito
+                    </button>
+
+                    <button class="filtro-btn" data-filtro="vagas">
+                        Com vagas
+                    </button>
+                </div>
+
+                <span class="resultados-count" id="resultados-count">
+                 {{ treinos.count }} {% if treinos.count == 1 %}resultado{% else %}resultados{% endif %}
+                </span>
+
+            </div>
+
+        </section>
+
+        <!-- Cards -->
+        <section class="treinos-grid" id="treinos-grid">
+
+            {% for training in treinos %}
+
+                <div
+                    class="treino-item"
+                    data-nome="{{ training.nome|lower }}"
+                    data-modalidade="{{ training.modalidade.nome|lower }}"
+                    data-local="{{ training.local|lower }}"
+                    data-gratuito="{{ training.gratuito|yesno:'true,false' }}"
+                    data-vagas="{{ training.tem_vagas|yesno:'true,false' }}"
+                >
+                    {% include 'users/components/treino_card.html' with training=training card_type="available" %}
+                </div>
+
+            {% empty %}
+
+                <div class="treinos-vazio">
+                    <h2>Nenhum treino disponível</h2>
+                    <p>Não existem treinos cadastrados no momento.</p>
+                </div>
+
+            {% endfor %}
+
+            <div class="treinos-vazio" id="nenhum-resultado" hidden>
+                <h2>Nenhum resultado encontrado</h2>
+                <p>Tente alterar os filtros ou a pesquisa.</p>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="{% static 'treinos/js/treinos.js' %}"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const pesquisa = document.getElementById("pesquisa-treino");
+            const cards = document.querySelectorAll(".treino-item");
+
+            const botoesModalidade = document.querySelectorAll(
+                ".filtros-modalidades .filtro-btn"
+            );
+
+            const botoesFiltro = document.querySelectorAll(
+                ".filtros-secundarios .filtro-btn"
+            );
+
+            const contador = document.getElementById("resultados-count");
+            const mensagemVazia = document.getElementById("nenhum-resultado");
+
+            let modalidadeSelecionada = "todas";
+            let filtroSelecionado = null;
+
+            function atualizarTreinos() {
+                const termo = pesquisa.value.toLowerCase().trim();
+                let resultados = 0;
+
+                cards.forEach(card => {
+                    const nome = card.dataset.nome || "";
+                    const modalidade = card.dataset.modalidade || "";
+                    const local = card.dataset.local || "";
+
+                    const correspondePesquisa =
+                        nome.includes(termo) ||
+                        modalidade.includes(termo) ||
+                        local.includes(termo);
+
+                    const correspondeModalidade =
+                        modalidadeSelecionada === "todas" ||
+                        modalidade === modalidadeSelecionada;
+
+                    let correspondeFiltro = true;
+
+                    if (filtroSelecionado === "gratuito") {
+                        correspondeFiltro = card.dataset.gratuito === "true";
+                    }
+
+                    if (filtroSelecionado === "vagas") {
+                        correspondeFiltro = card.dataset.vagas === "true";
+                    }
+
+                    const visivel =
+                        correspondePesquisa &&
+                        correspondeModalidade &&
+                        correspondeFiltro;
+
+                    card.hidden = !visivel;
+
+                    if (visivel) {
+                        resultados++;
+                    }
+                });
+
+                if (resultados === 1) {
+                    contador.textContent = `1 resultado`;
+                } else {
+                    contador.textContent = `${resultados} resultados`;
+                }
+
+                mensagemVazia.hidden = resultados !== 0;
+            }
+
+            // Pesquisa
+            pesquisa.addEventListener("input", atualizarTreinos);
+
+            // Modalidades
+            botoesModalidade.forEach(botao => {
+                botao.addEventListener("click", () => {
+                    botoesModalidade.forEach(b => b.classList.remove("ativo"));
+
+                    botao.classList.add("ativo");
+
+                    modalidadeSelecionada = botao.dataset.modalidade;
+
+                    atualizarTreinos();
+                });
+            });
+
+            // Filtros adicionais
+            botoesFiltro.forEach(botao => {
+                botao.addEventListener("click", () => {
+                    const filtro = botao.dataset.filtro;
+
+                    if (filtroSelecionado === filtro) {
+                        filtroSelecionado = null;
+                        botao.classList.remove("ativo");
+                    } else {
+                        botoesFiltro.forEach(b => b.classList.remove("ativo"));
+
+                        filtroSelecionado = filtro;
+                        botao.classList.add("ativo");
+                    }
+
+                    atualizarTreinos();
+                });
+            });
+
+            atualizarTreinos();
+        });
+    </script>
+
+</body>
+</html>
