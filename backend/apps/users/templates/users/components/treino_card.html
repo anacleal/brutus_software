@@ -1,3 +1,7 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/treino_card.css' %}">
+
 <a href="{% url 'treinos' %}" class="training-card">
 
     <div class="training-card__top">
@@ -12,9 +16,13 @@
                 <span class="training-card__status">
                     Criado
                 </span>
-            {% else %}
+            {% elif card_type == "enrolled" %}
                 <span class="training-card__status">
                     Inscrito
+                </span>
+            {% elif card_type == "available" and training.lotado %}
+                <span class="training-card__status training-card__status--full">
+                    Lotado
                 </span>
             {% endif %}
 
