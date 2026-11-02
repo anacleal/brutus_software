@@ -1,4 +1,4 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 import json
 from datetime import datetime
 from pathlib import Path
