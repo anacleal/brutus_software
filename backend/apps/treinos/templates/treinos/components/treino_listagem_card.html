@@ -1,0 +1,48 @@
+<article class="training-card">
+    <div class="training-card__top">
+        <span class="training-card__modality">{{ training.modalidade.nome }}</span>
+        {% if training.custo and training.custo > 0 %}
+            <span class="training-card__cost">R$ {{ training.custo|floatformat:2 }}</span>
+        {% else %}
+            <span class="training-card__cost training-card__cost--free">Gratuito</span>
+        {% endif %}
+    </div>
+
+    <h2 class="training-card__title">{{ training.nome }}</h2>
+
+    <div class="training-card__info">
+        <div class="training-card__info-row">
+            <svg class="training-card__info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg>
+            <strong>{{ training.local }}</strong>
+        </div>
+        <div class="training-card__info-row">
+            <svg class="training-card__info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"></rect><path d="M16 2v4M8 2v4M3 10h18"></path></svg>
+            <strong>{{ training.data_hora|date:"d/m/Y H:i" }}</strong>
+        </div>
+        <div class="training-card__info-row">
+            <svg class="training-card__info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+            <strong>{{ training.duracao }} minutos</strong>
+        </div>
+        <div class="training-card__info-row">
+            <svg class="training-card__info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+            <strong>
+                {{ training.total_inscricoes }}{% if training.limite_participantes %}/{{ training.limite_participantes }}{% endif %} participantes
+            </strong>
+        </div>
+    </div>
+
+    {% if training.limite_participantes %}
+    <div class="training-card__participants">
+        <div class="training-card__participants-text">
+            <span>Vagas</span>
+            <strong>{{ training.total_inscricoes }}/{{ training.limite_participantes }}</strong>
+        </div>
+        <div class="training-card__progress">
+            <div
+                class="training-card__progress-bar"
+                style="width: {% widthratio training.total_inscricoes training.limite_participantes 100 %}%;"
+            ></div>
+        </div>
+    </div>
+    {% endif %}
+</article>

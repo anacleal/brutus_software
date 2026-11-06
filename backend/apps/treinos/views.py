@@ -2,7 +2,8 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import redirect_to_login
-from django.http import HttpResponse, JsonResponse
+from django.db.models import Count, F, Q
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.utils import timezone
 from django.views.decorators.http import require_http_methods
@@ -13,7 +14,84 @@ from .models import ModalidadeEsportiva, Treino
 
 @login_required
 def treinos_view(request):
-    return HttpResponse("Treinos")
+    treinos = (
+        Treino.objects.select_related("modalidade")
+        .annotate(total_inscricoes=Count("inscricoes"))
+        .order_by("id")
+    )
+
+    if "text/html" in request.headers.get("Accept", ""):
+        pesquisa = request.GET.get("q", "").strip()
+        nome = request.GET.get("nome", "").strip()
+        modalidade_id = request.GET.get("modalidade", "")
+        gratuito = request.GET.get("gratuito") == "1"
+        com_vagas = request.GET.get("com_vagas") == "1"
+
+        if pesquisa:
+            treinos = treinos.filter(
+                Q(nome__icontains=pesquisa)
+                | Q(modalidade__nome__icontains=pesquisa)
+                | Q(local__icontains=pesquisa)
+            )
+        elif nome:
+            treinos = treinos.filter(nome__icontains=nome)
+            pesquisa = nome
+        if modalidade_id:
+            treinos = treinos.filter(modalidade_id=modalidade_id)
+        if gratuito:
+            treinos = treinos.filter(Q(custo__isnull=True) | Q(custo=0))
+        if com_vagas:
+            treinos = treinos.filter(
+                Q(limite_participantes__isnull=True)
+                | Q(total_inscricoes__lt=F("limite_participantes"))
+            )
+
+        total_treinos = Treino.objects.count()
+        return render(
+            request,
+            "treinos/listagem.html",
+            {
+                "treinos": treinos,
+                "pesquisa": pesquisa,
+                "modalidades": ModalidadeEsportiva.objects.order_by("nome"),
+                "modalidade_selecionada": modalidade_id,
+                "gratuito": gratuito,
+                "com_vagas": com_vagas,
+                "total_treinos": total_treinos,
+                "tem_filtros": bool(
+                    pesquisa or modalidade_id or gratuito or com_vagas
+                ),
+            },
+        )
+
+    nome = request.GET.get("nome", "").strip()
+    if nome:
+        treinos = treinos.filter(nome__icontains=nome)
+
+    return JsonResponse(
+        {
+            "treinos": [
+                {
+                    "id": treino.id,
+                    "criador": treino.criador_id,
+                    "modalidade_id": treino.modalidade_id,
+                    "nome": treino.nome,
+                    "limite_participantes": treino.limite_participantes,
+                    "local": treino.local,
+                    "data_hora": treino.data_hora.isoformat(),
+                    "duracao": treino.duracao,
+                    "custo": (
+                        int(treino.custo)
+                        if treino.custo == treino.custo.to_integral_value()
+                        else float(treino.custo)
+                    ) if treino.custo is not None else None,
+                    "observacoes": treino.observacoes,
+                    "created_at": treino.created_at.isoformat(),
+                }
+                for treino in treinos
+            ]
+        }
+    )
 
 
 def _render_create_workout(request, form, status=200, submitted=False):

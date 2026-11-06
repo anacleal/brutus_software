@@ -4,9 +4,148 @@ from decimal import Decimal
 
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.urls import reverse
 from django.utils import timezone
 
-from .models import ModalidadeEsportiva, Treino
+from .models import InscricaoTreino, ModalidadeEsportiva, Treino
+
+
+class TreinosListagemPageTests(TestCase):
+    def setUp(self):
+        self.usuario = get_user_model().objects.create_user(
+            usuario="atleta",
+            email="atleta@exemplo.com",
+            nome="Atleta",
+            sobrenome="Teste",
+            e_socio=False,
+            password="BrutusTestPassword123!",
+        )
+        self.modalidade = ModalidadeEsportiva.objects.get_or_create(nome="Futebol")[0]
+        self.client.force_login(self.usuario)
+
+    def criar_treino(self, nome):
+        return Treino.objects.create(
+            criador=self.usuario,
+            modalidade=self.modalidade,
+            nome=nome,
+            local="Quadra principal",
+            data_hora=timezone.now() + timedelta(days=1),
+            duracao=90,
+        )
+
+    def test_pagina_treinos_exibe_busca_e_lista_completa(self):
+        self.criar_treino("Treino de futebol")
+        self.criar_treino("Treino de vôlei")
+
+        response = self.client.get(
+            reverse("treinos"),
+            HTTP_ACCEPT="text/html",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'name="q"')
+        self.assertNotContains(response, "Aplicar filtros")
+        self.assertContains(response, "Treino de futebol")
+        self.assertContains(response, "Treino de vôlei")
+
+    def test_pesquisa_na_pagina_filtra_por_nome_parcial_sem_diferenciar_caixa(self):
+        for nome, modalidade in (
+            ("Treino de futebol", self.modalidade),
+            ("FUTEBOL na areia", self.modalidade),
+            (
+                "Treino de vôlei",
+                ModalidadeEsportiva.objects.get_or_create(nome="Vôlei")[0],
+            ),
+        ):
+            Treino.objects.create(
+                criador=self.usuario,
+                modalidade=modalidade,
+                nome=nome,
+                local="Quadra principal",
+                data_hora=timezone.now() + timedelta(days=1),
+                duracao=90,
+            )
+
+        response = self.client.get(
+            reverse("treinos"),
+            {"q": "fUtEbOl"},
+            HTTP_ACCEPT="text/html",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'value="fUtEbOl"')
+        self.assertContains(response, "Treino de futebol")
+        self.assertContains(response, "FUTEBOL na areia")
+        self.assertNotContains(response, "Treino de vôlei")
+
+    def test_pesquisa_sem_correspondencia_mostra_estado_vazio(self):
+        self.criar_treino("Treino de vôlei")
+
+        response = self.client.get(
+            reverse("treinos"),
+            {"q": "basquete"},
+            HTTP_ACCEPT="text/html",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Nenhum treino encontrado com esse nome.")
+        self.assertNotContains(response, "Treino de vôlei")
+
+    def test_pesquisa_considera_modalidade_e_local(self):
+        outra_modalidade = ModalidadeEsportiva.objects.get_or_create(nome="Basquete")[0]
+        treino_modalidade = self.criar_treino("Treino da equipe")
+        treino_local = Treino.objects.create(
+            criador=self.usuario,
+            modalidade=self.modalidade,
+            nome="Partida de sábado",
+            local="Ginásio Central",
+            data_hora=timezone.now() + timedelta(days=1),
+            duracao=90,
+        )
+        Treino.objects.filter(pk=treino_modalidade.pk).update(modalidade=outra_modalidade)
+
+        for termo in ("basquete", "central"):
+            with self.subTest(termo=termo):
+                response = self.client.get(
+                    reverse("treinos"),
+                    {"q": termo},
+                    HTTP_ACCEPT="text/html",
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertContains(
+                    response,
+                    "Treino da equipe" if termo == "basquete" else "Partida de sábado",
+                )
+
+    def test_filtros_de_modalidade_gratuito_e_com_vagas(self):
+        modalidade_basket = ModalidadeEsportiva.objects.get_or_create(nome="Basquete")[0]
+        disponivel = self.criar_treino("Treino disponível")
+        indisponivel = Treino.objects.create(
+            criador=self.usuario,
+            modalidade=modalidade_basket,
+            nome="Treino lotado",
+            limite_participantes=1,
+            local="Ginásio",
+            data_hora=timezone.now() + timedelta(days=1),
+            duracao=90,
+            custo=Decimal("10.00"),
+        )
+        InscricaoTreino.objects.create(usuario=self.usuario, treino=indisponivel)
+
+        response = self.client.get(
+            reverse("treinos"),
+            {
+                "modalidade": str(self.modalidade.id),
+                "gratuito": "1",
+                "com_vagas": "1",
+            },
+            HTTP_ACCEPT="text/html",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Treino disponível")
+        self.assertNotContains(response, "Treino lotado")
+        self.assertContains(response, "Gratuito")
 
 
 class CriarTreinoEndpointTests(TestCase):
@@ -41,6 +180,61 @@ class CriarTreinoEndpointTests(TestCase):
             "custo": 0,
             "observacoes": "Levar chuteira",
         }
+
+    def test_lista_treinos_sem_filtro(self):
+        outros_dados = {**self.dados, "nome": "Treino de vôlei"}
+        self.client.post(
+            self.url,
+            data=json.dumps(self.dados),
+            content_type="application/json",
+        )
+        self.client.post(
+            self.url,
+            data=json.dumps(outros_dados),
+            content_type="application/json",
+        )
+
+        response = self.client.get("/treinos/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            [treino["nome"] for treino in response.json()["treinos"]],
+            ["Treino de futebol", "Treino de vôlei"],
+        )
+
+    def test_filtra_treinos_por_nome_parcial_sem_diferenciar_maiusculas(self):
+        for nome in ("Treino de futebol", "FUTEBOL na areia", "Treino de vôlei"):
+            Treino.objects.create(
+                criador=self.criador,
+                modalidade=self.modalidade,
+                nome=nome,
+                local="Quadra principal",
+                data_hora=timezone.now() + timedelta(days=1),
+                duracao=90,
+            )
+
+        response = self.client.get("/treinos/?nome=fUtEbOl")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            [treino["nome"] for treino in response.json()["treinos"]],
+            ["Treino de futebol", "FUTEBOL na areia"],
+        )
+
+    def test_filtro_sem_correspondencia_retorna_lista_vazia(self):
+        Treino.objects.create(
+            criador=self.criador,
+            modalidade=self.modalidade,
+            nome="Treino de vôlei",
+            local="Quadra principal",
+            data_hora=timezone.now() + timedelta(days=1),
+            duracao=90,
+        )
+
+        response = self.client.get("/treinos/?nome=basquete")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["treinos"], [])
 
     def test_cria_treino_e_vincula_usuario_autenticado(self):
         dados = {**self.dados, "criador": self.outro_usuario.id}

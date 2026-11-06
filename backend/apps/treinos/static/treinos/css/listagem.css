@@ -1,0 +1,219 @@
+.treinos-pesquisa {
+  margin-bottom: 1.5rem;
+}
+
+.proximos__topo h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.5rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+}
+
+.proximos__topo p {
+  margin: 0.25rem 0 0;
+  color: rgb(255 255 255 / 35%);
+  font-size: 0.875rem;
+}
+
+.treinos-pesquisa__campo {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.treinos-pesquisa__icone {
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  width: 1rem;
+  height: 1rem;
+  transform: translateY(-50%);
+  fill: none;
+  stroke: rgb(255 255 255 / 25%);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  pointer-events: none;
+}
+
+.treinos-pesquisa input {
+  width: 100%;
+  flex: 1;
+  min-width: 0;
+  padding: 0.75rem 2.75rem;
+  color: #ffffff;
+  background: #141923;
+  border: 1px solid #1e2a3c;
+  border-radius: 0.75rem;
+  font: inherit;
+  font-size: 0.875rem;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+
+.treinos-pesquisa input::placeholder {
+  color: rgb(255 255 255 / 20%);
+}
+
+.treinos-pesquisa input:focus {
+  outline: none;
+  background: #18202e;
+  border-color: rgb(192 57 43 / 40%);
+}
+
+.treinos-pesquisa__limpar-busca {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  display: grid;
+  width: 1.25rem;
+  height: 1.25rem;
+  place-items: center;
+  transform: translateY(-50%);
+  color: rgb(255 255 255 / 25%);
+}
+
+.treinos-pesquisa__limpar-busca:hover {
+  color: #ffffff;
+}
+
+.treinos-pesquisa__limpar-busca svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 2;
+}
+
+.treinos-filtros {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.treinos-filtros__modalidades {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  margin: 0 -1rem;
+  padding: 0.25rem 1rem 0.5rem;
+  scrollbar-width: thin;
+}
+
+.treinos-filtros__opcoes {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filtro-chip {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  padding: 0.5rem 0.875rem;
+  color: rgb(255 255 255 / 45%);
+  background: #141923;
+  border: 1px solid #1e2a3c;
+  border-radius: 0.625rem;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
+}
+
+.filtro-chip:hover {
+  color: rgb(255 255 255 / 75%);
+  border-color: #2a3a54;
+}
+
+.filtro-chip input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.filtro-chip:focus-within {
+  outline: 2px solid rgb(192 57 43 / 60%);
+  outline-offset: 2px;
+}
+
+.filtro-chip--ativo {
+  color: #ffffff;
+  background: #c0392b;
+  border-color: #c0392b;
+}
+
+.filtro-chip--gratuito.filtro-chip--ativo {
+  background: rgb(21 128 61 / 60%);
+  border-color: rgb(22 101 52 / 50%);
+}
+
+.treinos-filtros__contagem {
+  margin-left: auto;
+  color: rgb(255 255 255 / 25%);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.treinos-lista {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  overflow: visible;
+  margin: 0;
+  padding: 0;
+}
+
+.treinos-lista > .training-card {
+  min-width: 0;
+}
+
+.treinos-lista > .proximos__vazio {
+  grid-column: 1 / -1;
+}
+
+.training-card__info-icon {
+  width: 0.875rem;
+  height: 0.875rem;
+  flex: 0 0 auto;
+  color: #697484;
+}
+
+.training-card__participants {
+  margin-top: auto;
+  padding-top: 0.75rem;
+}
+
+@media (min-width: 40rem) {
+  .treinos-lista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64rem) {
+  .treinos-filtros__modalidades {
+    flex-wrap: wrap;
+    overflow: visible;
+    margin: 0;
+    padding: 0.25rem 0 0.5rem;
+  }
+
+  .treinos-lista {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 38rem) {
+  .treinos-filtros__opcoes {
+    flex-wrap: wrap;
+  }
+
+  .treinos-filtros__contagem {
+    width: 100%;
+    text-align: right;
+  }
+}

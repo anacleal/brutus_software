@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Treinos - Brutus{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="{% static 'css/treino_card.css' %}">
+<link rel="stylesheet" href="{% static 'core/css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'treinos/css/listagem.css' %}">
+{% endblock %}
+
+{% block content %}
+{% include 'header.html' %}
+
+<main class="dashboard">
+    <section class="proximos">
+        <div class="proximos__topo">
+            <div>
+                <h1>Treinos disponíveis</h1>
+                <p>{{ total_treinos }} treino{{ total_treinos|pluralize }} na plataforma</p>
+            </div>
+        </div>
+
+        <form class="treinos-pesquisa" role="search" method="get" action="{% url 'treinos' %}">
+            <div class="treinos-pesquisa__campo">
+                <label class="sr-only" for="treinos-pesquisa-nome">Pesquisar treino, modalidade ou local</label>
+                <svg class="treinos-pesquisa__icone" viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <path d="m20 20-4-4"></path>
+                </svg>
+                <input
+                    id="treinos-pesquisa-nome"
+                    name="q"
+                    type="text"
+                    value="{{ pesquisa }}"
+                    placeholder="Pesquisar treino, modalidade ou local..."
+                    autocomplete="off"
+                >
+                {% if pesquisa %}
+                <a class="treinos-pesquisa__limpar-busca" href="{% url 'treinos' %}" aria-label="Limpar busca">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m18 6-12 12M6 6l12 12"></path></svg>
+                </a>
+                {% endif %}
+            </div>
+
+            <div class="treinos-filtros">
+                <div class="treinos-filtros__modalidades" role="group" aria-label="Filtrar por modalidade">
+                    <label class="filtro-chip{% if not modalidade_selecionada %} filtro-chip--ativo{% endif %}">
+                        <input type="radio" name="modalidade" value="" {% if not modalidade_selecionada %}checked{% endif %}>
+                        <span>Todos</span>
+                    </label>
+                    {% for modalidade in modalidades %}
+                    <label class="filtro-chip{% if modalidade_selecionada == modalidade.id|stringformat:'s' %} filtro-chip--ativo{% endif %}">
+                        <input
+                            type="radio"
+                            name="modalidade"
+                            value="{{ modalidade.id }}"
+                            {% if modalidade_selecionada == modalidade.id|stringformat:'s' %}checked{% endif %}
+                        >
+                        <span>{{ modalidade.nome }}</span>
+                    </label>
+                    {% endfor %}
+                </div>
+
+                <div class="treinos-filtros__opcoes">
+                    <label class="filtro-chip filtro-chip--gratuito{% if gratuito %} filtro-chip--ativo{% endif %}">
+                        <input type="checkbox" name="gratuito" value="1" {% if gratuito %}checked{% endif %}>
+                        <span>Gratuito</span>
+                    </label>
+                    <label class="filtro-chip{% if com_vagas %} filtro-chip--ativo{% endif %}">
+                        <input type="checkbox" name="com_vagas" value="1" {% if com_vagas %}checked{% endif %}>
+                        <span>Com vagas</span>
+                    </label>
+                    <span class="treinos-filtros__contagem" aria-live="polite">
+                        {{ treinos|length }} resultado{{ treinos|length|pluralize }}
+                    </span>
+                </div>
+            </div>
+        </form>
+
+        <div class="proximos__lista treinos-lista">
+            {% for training in treinos %}
+                {% include 'treinos/components/treino_listagem_card.html' with training=training %}
+            {% empty %}
+                {% if tem_filtros %}
+                    {% include 'core/components/empty_state.html' with message="Nenhum treino encontrado com esse nome." description="Tente outros termos ou remova os filtros aplicados." action_url=request.path action_label="Limpar busca e filtros" %}
+                {% else %}
+                    {% include 'core/components/empty_state.html' with message="Nenhum treino disponível no momento." description="Ainda não há treinos publicados na plataforma." %}
+                {% endif %}
+            {% endfor %}
+        </div>
+    </section>
+</main>
+
+<script>
+    document.querySelectorAll('.treinos-filtros input').forEach((input) => {
+        input.addEventListener('change', () => input.form.requestSubmit());
+    });
+</script>
+{% endblock %}

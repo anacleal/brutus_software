@@ -76,10 +76,18 @@ gratuito/pago, validação de erros, cancelamento da criação).
 - `models.py` — modelos `Treino` e `ModalidadeEsportiva`, correspondentes às
   tabelas `treinos` e `modalidades_esportivas` definidas em
   `supabase/migrations/migrations.sql`.
-- `views.py` — a rota `/treinos/criar/` exibe o formulário em GET e recebe
-  envios em POST. A criação associa `criador` ao usuário autenticado, valida
-  nome, modalidade, local, data futura, duração, vagas e valor, e persiste o
-  treino. O POST também aceita JSON para integração com clientes de API.
+- `views.py` — a rota `/treinos/` exibe a listagem HTML quando acessada pelo
+  navegador e retorna JSON para clientes de API. A página permite buscar por
+  nome, modalidade ou local e filtrar por modalidade, gratuidade e vagas
+  disponíveis. A API aceita o parâmetro opcional `nome` para busca parcial sem
+  diferenciar maiúsculas/minúsculas. A rota `/treinos/criar/` exibe o
+  formulário em GET e recebe envios em POST. A criação associa `criador` ao
+  usuário autenticado, valida nome, modalidade, local, data futura, duração,
+  vagas e valor, e persiste o treino. O POST também aceita JSON para integração
+  com clientes de API.
+- `templates/treinos/listagem.html` — página acessível pelo botão Treinos do
+  cabeçalho, com pesquisa por nome e estado vazio compartilhado em
+  `core/components/empty_state.html`.
 - `templates/treinos/criar_treino.html` — formulário responsivo para criação
   de treinos, com mensagens de validação e retorno à tela inicial.
 - `filters.py` — lógica de filtro (modalidade, data, faixa de preço,

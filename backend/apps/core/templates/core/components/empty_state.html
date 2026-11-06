@@ -1,0 +1,9 @@
+<div class="proximos__vazio" role="status">
+    <p class="empty-state__title">{{ message }}</p>
+    {% if description %}
+    <p class="empty-state__description">{{ description }}</p>
+    {% endif %}
+    {% if action_url %}
+    <a class="empty-state__action" href="{{ action_url }}">{{ action_label }}</a>
+    {% endif %}
+</div>
