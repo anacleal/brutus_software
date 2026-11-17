@@ -7,15 +7,18 @@ class AuthenticationSessionTests(TestCase):
     def setUp(self):
         self.password = 'BrutusTestPassword123!'
         self.user = get_user_model().objects.create_user(
-            username='atleta',
+            usuario='atleta',
             email='atleta@example.com',
+            nome='Atleta',
+            sobrenome='Teste',
+            e_socio=False,
             password=self.password,
         )
 
     def test_session_persists_and_logout_ends_it(self):
         response = self.client.post(
             reverse('login'),
-            {'username': self.user.username, 'password': self.password},
+            {'username': self.user.usuario, 'password': self.password},
         )
         self.assertRedirects(response, reverse('dashboard'))
 
@@ -64,7 +67,7 @@ class AuthenticationSessionTests(TestCase):
         response = self.client.post(
             reverse('login'),
             {
-                'username': self.user.username,
+                'username': self.user.usuario,
                 'password': self.password,
                 'next': 'https://example.com/',
             },

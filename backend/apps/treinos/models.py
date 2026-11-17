@@ -1,4 +1,7 @@
+from django.conf import settings
 from django.db import models
+
+from apps.modalidades.models import ModalidadeEsportiva
 
 class Treino(models.Model):
     id = models.AutoField(primary_key=True)
@@ -9,7 +12,7 @@ class Treino(models.Model):
         related_name="treinos_criados",
     )
     modalidade = models.ForeignKey(
-        'modalidades.ModalidadeEsportiva',
+        ModalidadeEsportiva,
         db_column="modalidade_id",
         on_delete=models.PROTECT,
         related_name="treinos",

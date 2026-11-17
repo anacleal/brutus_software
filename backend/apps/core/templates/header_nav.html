@@ -1,0 +1,407 @@
+<style>
+    :root {
+        --bg: #0A0D13;
+        --header-border: rgba(255, 255, 255, .05);
+        --accent: #C0392B;
+        --accent-hover: #A52F23;
+        --accent-active: #E05A4A;
+        --avatar-bg: #1E2A3A;
+        --text-25: rgba(255, 255, 255, .25);
+        --text-35: rgba(255, 255, 255, .35);
+        --text-40: rgba(255, 255, 255, .4);
+        --text-50: rgba(255, 255, 255, .5);
+        --text-55: rgba(255, 255, 255, .55);
+        --text-60: rgba(255, 255, 255, .6);
+        --text-80: rgba(255, 255, 255, .8);
+        --white-5: rgba(255, 255, 255, .05);
+        --white-8: rgba(255, 255, 255, .08);
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        min-height: 100vh;
+        margin: 0;
+        background: var(--bg);
+        color: #fff;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    button {
+        border: 0;
+        background: none;
+        color: inherit;
+        cursor: pointer;
+        font: inherit;
+    }
+
+    .header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        border-bottom: 1px solid var(--header-border);
+        background: rgba(10, 13, 19, .95);
+        backdrop-filter: blur(6px);
+    }
+
+    .header-desktop {
+        display: none;
+        height: 64px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 32px;
+    }
+
+    .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .logo-badge {
+        display: grid;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        border-radius: 8px;
+        background: var(--accent);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .logo-text {
+        color: #fff;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: -.02em;
+    }
+
+    .logo:hover .logo-text {
+        color: var(--text-80);
+    }
+
+    .desktop-nav,
+    .header-actions,
+    .mobile-topbar-actions {
+        display: flex;
+        align-items: center;
+    }
+
+    .desktop-nav,
+    .header-actions {
+        gap: 4px;
+    }
+
+    .nav-btn,
+    .profile-btn,
+    .btn-primary,
+    .icon-btn,
+    .logout-btn {
+        border-radius: 8px;
+    }
+
+    .nav-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        color: var(--text-50);
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .nav-btn:hover,
+    .profile-btn:hover,
+    .icon-btn:hover,
+    .logout-btn:hover {
+        background: var(--white-5);
+    }
+
+    .nav-btn.active,
+    .profile-btn.active {
+        background: var(--white-8);
+        color: #fff;
+    }
+
+    .btn-primary {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        background: var(--accent);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .btn-primary:hover {
+        background: var(--accent-hover);
+    }
+
+    .btn-primary.active {
+        background: var(--accent-active);
+        box-shadow: 0 0 0 2px rgba(224, 90, 74, .35);
+    }
+
+    .profile-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px;
+    }
+
+    .profile-name {
+        padding-right: 4px;
+        color: var(--text-55);
+        font-size: 14px;
+    }
+
+    .avatar {
+        display: grid;
+        width: 28px;
+        height: 28px;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--avatar-bg);
+        color: var(--text-50);
+    }
+
+    .divider {
+        width: 1px;
+        height: 20px;
+        margin: 0 4px;
+        background: var(--white-8);
+    }
+
+    .logout-form {
+        display: inline-flex;
+        margin: 0 4px;
+    }
+
+    .logout-btn,
+    .icon-btn {
+        position: relative;
+        padding: 8px;
+        color: var(--text-35);
+    }
+
+    .icon {
+        width: 18px;
+        height: 18px;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 2;
+    }
+
+    .icon-dot {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+    }
+
+    .header-mobile {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .mobile-topbar {
+        display: flex;
+        height: 48px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+    }
+
+    .mobile-topbar-actions {
+        gap: 4px;
+    }
+
+    .mobile-topbar .logo-badge {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+
+    .mobile-topbar .logo-text {
+        font-size: 16px;
+    }
+
+    .mobile-tabs {
+        display: flex;
+        align-items: center;
+        padding: 0 8px 6px;
+    }
+
+    .tab-btn {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 0;
+        border-radius: 12px;
+        color: var(--text-35);
+    }
+
+    .tab-btn.active {
+        background: rgba(224, 90, 74, .08);
+        color: var(--accent-active);
+    }
+
+    .tab-label {
+        font-size: 10px;
+        font-weight: 500;
+        line-height: 1;
+    }
+
+    @media (min-width: 1024px) {
+        .header-desktop {
+            display: flex;
+        }
+
+        .header-mobile {
+            display: none;
+        }
+    }
+</style>
+
+<header class="header header-desktop">
+    <button class="logo" type="button" onclick="navigate('dashboard')" aria-label="Brutus, início">
+        <span class="logo-badge" aria-hidden="true">B</span>
+        <span class="logo-text">Brutus</span>
+    </button>
+    <nav class="desktop-nav" id="desktop-main-nav" aria-label="Navegação principal"></nav>
+    <div class="header-actions">
+        <button class="btn-primary" id="desktop-create-workout" type="button" onclick="navigate('create-workout')">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Criar treino
+        </button>
+        <button class="icon-btn" type="button" aria-label="Notificações">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span class="icon-dot" aria-hidden="true"></span>
+        </button>
+        <button class="profile-btn" id="desktop-profile" type="button" onclick="navigate('profile')">
+            <span class="avatar" aria-hidden="true">
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </span>
+            <span class="profile-name">Usuário</span>
+        </button>
+        <div class="divider" aria-hidden="true"></div>
+        <form class="logout-form" method="post" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button class="logout-btn" type="submit" title="Sair" aria-label="Sair">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                </svg>
+            </button>
+        </form>
+    </div>
+</header>
+
+<header class="header header-mobile">
+    <div class="mobile-topbar">
+        <button class="logo" type="button" onclick="navigate('dashboard')" aria-label="Brutus, início">
+            <span class="logo-badge" aria-hidden="true">B</span>
+            <span class="logo-text">Brutus</span>
+        </button>
+        <div class="mobile-topbar-actions">
+            <button class="icon-btn" type="button" aria-label="Notificações">
+                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                <span class="icon-dot" aria-hidden="true"></span>
+            </button>
+            <button class="profile-btn" type="button" onclick="navigate('profile')" aria-label="Perfil">
+                <span class="avatar" aria-hidden="true">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </span>
+            </button>
+            <form class="logout-form" method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button class="logout-btn" type="submit" title="Sair" aria-label="Sair">
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
+    <nav class="mobile-tabs" id="mobile-nav" aria-label="Navegação móvel"></nav>
+</header>
+
+<script>
+    const mainNav = [
+        { page: "dashboard", label: "Início", icon: "home" },
+        { page: "workouts", label: "Treinos", icon: "dumbbell" }
+    ];
+    const mobileNav = [
+        { page: "dashboard", label: "Início", icon: "home" },
+        { page: "workouts", label: "Treinos", icon: "dumbbell" },
+        { page: "create-workout", label: "Criar", icon: "plus" },
+        { page: "profile", label: "Perfil", icon: "user" }
+    ];
+    const icons = {
+        home: '<path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+        dumbbell: '<path d="M6.5 6.5 17.5 17.5"/><path d="m4 8 2-2M18 20l2-2M2 12l2-2M20 16l2-2"/><rect x="2" y="14" width="4" height="4" rx="1"/><rect x="18" y="6" width="4" height="4" rx="1"/>',
+        plus: '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+        user: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>'
+    };
+    const routes = {
+        dashboard: "/dashboard/",
+        workouts: "/treinos/",
+        "create-workout": "/treinos/criar/",
+        profile: "/perfil/"
+    };
+    const currentPath = window.location.pathname;
+    const currentPage = currentPath === "/treinos/criar/" ? "create-workout"
+        : currentPath === "/treinos/" ? "workouts"
+        : currentPath === "/perfil/" ? "profile"
+        : "dashboard";
+
+    function navigate(page) {
+        if (routes[page]) window.location.href = routes[page];
+    }
+
+    function svgIcon(name) {
+        return `<svg class="icon" viewBox="0 0 24 24" aria-hidden="true">${icons[name]}</svg>`;
+    }
+
+    document.getElementById("desktop-main-nav").innerHTML = mainNav.map(item =>
+        `<button class="nav-btn${currentPage === item.page ? " active" : ""}" type="button" onclick="navigate('${item.page}')">${svgIcon(item.icon)}${item.label}</button>`
+    ).join("");
+    document.getElementById("mobile-nav").innerHTML = mobileNav.map(item =>
+        `<button class="tab-btn${currentPage === item.page ? " active" : ""}" type="button" onclick="navigate('${item.page}')">${svgIcon(item.icon)}<span class="tab-label">${item.label}</span></button>`
+    ).join("");
+    if (currentPage === "create-workout") {
+        document.getElementById("desktop-create-workout").classList.add("active");
+    }
+    if (currentPage === "profile") {
+        document.getElementById("desktop-profile").classList.add("active");
+    }
+</script>

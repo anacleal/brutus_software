@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Nova senha - Brutus{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="{% static 'users/css/login.css' %}"> {# reaproveita o visual do login #}
+<link rel="stylesheet" href="{% static 'users/css/esqueci_senha.css' %}"> {# reaproveita a caixa .mensagem #}
+{% endblock %}
+
+{% block content %}
+<div class="marca">
+    <div class="marca__selo">B</div>
+    <div>
+        <div class="marca__nome">Brutus</div>
+        <div class="marca__lema">Atlética Universitária</div>
+    </div>
+</div>
+
+{% if token_valido %}
+<h1>Crie uma nova senha</h1>
+<p>Use pelo menos 8 caracteres e evite senhas muito comuns ou só com números.</p>
+
+<form id="form-redefinir-senha" method="post" action="{% url 'senha-redefinir' %}">
+    {% csrf_token %}
+    <input type="hidden" name="token" value="{{ token }}">
+
+    <label for="nova_senha">Nova senha</label>
+    <input type="password" name="nova_senha" id="nova_senha" placeholder="••••••••" autocomplete="new-password" required autofocus>
+
+    <label for="confirmacao">Confirmar nova senha</label>
+    <input type="password" name="confirmacao" id="confirmacao" placeholder="••••••••" autocomplete="new-password" required>
+
+    <button type="submit">Salvar nova senha</button>
+</form>
+
+{# aqui aparece a mensagem de sucesso (ou de erro) #}
+<p id="mensagem" class="mensagem" role="status" aria-live="polite" hidden></p>
+{% else %}
+<h1>Link inválido ou expirado</h1>
+<p>Este link de redefinição não é mais válido. Peça um novo link para continuar.</p>
+{% endif %}
+
+<div class="rodape">
+    <a href="{% url 'esqueci-senha' %}">Pedir novo link</a> · <a href="{% url 'login' %}">Voltar para o login</a>
+</div>
+
+{% if token_valido %}
+<script>
+    const form = document.getElementById('form-redefinir-senha');
+    const mensagem = document.getElementById('mensagem');
+    const botao = form.querySelector('button[type="submit"]');
+
+    // mesma mensagem em português do login para campo vazio
+    form.querySelectorAll('[required]').forEach((campo) => {
+        campo.addEventListener('invalid', () => {
+            campo.setCustomValidity('Por favor, preencha este campo.');
+        });
+        campo.addEventListener('input', () => {
+            campo.setCustomValidity('');
+        });
+    });
+
+    function mostrar(texto, erro = false) {
+        mensagem.textContent = texto;
+        mensagem.className = erro ? 'mensagem mensagem--erro' : 'mensagem';
+        mensagem.hidden = false;
+    }
+
+    form.addEventListener('submit', async (evento) => {
+        evento.preventDefault(); // evita recarregar a página
+        botao.disabled = true; // evita clique duplo
+        let concluiu = false;
+        try {
+            // FormData leva token, nova_senha, confirmacao e o csrfmiddlewaretoken
+            const resposta = await fetch(form.action, { method: 'POST', body: new FormData(form) });
+            let dados = {};
+            try {
+                dados = await resposta.json();
+            } catch (erro) {
+                // erro de CSRF (403) ou 500 voltam em HTML, não em JSON
+            }
+            if (resposta.ok) {
+                concluiu = true;
+                form.style.display = 'none';
+                mostrar(dados.detail);
+                setTimeout(() => { window.location.href = "{% url 'login' %}"; }, 2500);
+            } else {
+                mostrar(dados.detail || 'Não foi possível processar o pedido. Tente novamente em instantes.', true);
+            }
+        } catch (erro) {
+            mostrar('Não foi possível processar o pedido. Tente novamente em instantes.', true);
+        } finally {
+            botao.disabled = concluiu; // depois de sucesso o botão fica bloqueado
+        }
+    });
+</script>
+{% endif %}
+{% endblock %}
