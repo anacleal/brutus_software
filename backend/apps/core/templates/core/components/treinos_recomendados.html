@@ -4,7 +4,14 @@
     <div class="recomendados__topo">
         <div>
             <h2>Treinos recomendados</h2>
-            <p>Baseado na sua modalidade favorita — Musculação</p>
+            {% with modalidades=user.modalidades.all %}
+                {% if modalidades %}
+                    <p>
+                        Baseado na{{ modalidades|length|pluralize }} sua{{ modalidades|length|pluralize }} modalidade{{ modalidades|length|pluralize }} favorita{{ modalidades|length|pluralize }} —
+                        {% for modalidade in modalidades %}{{ modalidade.nome }}{% if not forloop.last %}, {% endif %}{% endfor %}
+                    </p>
+                {% endif %}
+            {% endwith %}
         </div>
 
         <a href="{% url 'treinos' %}" class="recomendados__ver-todos">
